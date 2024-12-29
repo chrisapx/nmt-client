@@ -1,13 +1,11 @@
-import { useNavigate } from 'react-router-dom';
 import Header from '../../../components/header/Header';
 import { useListings } from '../../../hooks/useListings';
 
 const Cart = () => {
-    const navigate = useNavigate();
     const { listings } = useListings();
 
     const handleCheckoutCart = () => {
-        // go to the checkout page
+        
     }
 
     return(
@@ -17,6 +15,7 @@ const Cart = () => {
                     <Header showBack />
                     {listings.toString()}
                 </div>
+
             </div>
             
             {/* Desktop view */}
