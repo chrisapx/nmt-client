@@ -1,155 +1,74 @@
-import { useState } from 'react';
-import './Header.scss'
-import { FaRegUser } from 'react-icons/fa';
+import { useState } from "react";
+import { FaRegUser, FaSearch } from "react-icons/fa";
 import { FaAngleLeft, FaCartShopping, FaX } from "react-icons/fa6";
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
-import Search from '../search/Search';
+import { useNavigate } from "react-router-dom";
+import { CgMenu } from "react-icons/cg";
+import { ShoppingCartOutlined } from "@mui/icons-material";
 
+const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
 
+  const navigate = useNavigate();
+  const [cartCount, setCartCount] = useState(1);
+  const [toggle, setToggle] = useState(false);
 
-
-const Header = ({ showBack, showSearch }) => {
-
-    const s_red = '#c83f49';
-
-    const navigate = useNavigate();
-    const { totalItems } = useCart();
-    const [toggle, setToggle] = useState(false);
-    const [categories, setCategories] = useState([]);
-    const [selected, setSelected] = useState('All');
-
-    const handleSelected = ( select ) => {
-        if(select){
-            setSelected('');
-            setSelected(select);
-        }
-    }
-
-    const upperCat = [ 
-        {name: "All", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'}, 
-        {name: "Women", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-        {name: "Men", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-        {name: "Kids", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-        {name: "Jewelry", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-        {name: "Kitchen", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-        {name: "Home", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-        {name: "School", image: 'src/assets/Apple-iPhone-12-PNG-Pic.png'},
-    ]
-    return(
-        <div className="main" >
-            <div className='head'>
-                <div className="left">
-                    {showBack && <div className='back-icon'>
-                        <FaAngleLeft size={22} color={'grey'} onClick={() => navigate(-1)}/>
-                    </div>}
-                    <div className='logo' style={{fontWeight: '600', cursor: 'pointer', marginRight: 0}} onClick={() => navigate('/')}>
-                        <div style={{color: s_red, fontStyle: '-moz-initial', fontSize: 20}}>NALMART</div>
-                    </div>
-                </div>
-                
-                <div style={{display: 'flex', width: '5vw', justifyContent: 'center'}}>
-                    <Search/>
-                </div>
-
-                <div className="right">
-                    {/* {showSearch && <div className='menu-item'  onClick={() => navigate('/search')}>
-                        <FaSearch size={22} color={'black'}/>
-                    </div>} */}
-                    <div className='menu-item' onClick={() => navigate('/account')}>
-                        <FaRegUser size={22} />
-                        {/* <div style={{position: 'relative', bottom: 4, right: 3, color: 'red', backgroundColor: '', borderRadius: 30, padding: 2, fontWeight: '600', fontSize: 16}}>?</div> */}
-                    </div>
-                    <div className='menu-item' onClick={() => navigate('/cart')}>
-                        <FaCartShopping size={22} />
-                        <div style={{position: 'relative', bottom: 9, right: 12, color: 'white', backgroundColor: 'orange', borderRadius: 30, padding: 2, fontWeight: '700', fontSize: 8}}>{totalItems}</div>
-                    </div>
-                </div>
+  return (
+    <div className="flex flex-col">
+      <div className="flex justify-between items-center mt-4 bg-white">
+        <div className="flex items-center">
+          {showBack && (
+            <div className="mr-4 cursor-pointer">
+              <FaAngleLeft size={22} className="text-gray-500" onClick={() => navigate(-1)} />
             </div>
+          )}
+
+          { showMenuIcon && <CgMenu className='text-2xl text-gray-500 mr-2' onClick={() => setToggle(!toggle)}/> }
+          <div
+            className="font-semibold text-2xl text-red-600 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            Nalmart
+          </div>
         </div>
-    )
-}
+
+        <div className="flex items-center space-x-4">
+          { showUser && <div className="cursor-pointer" onClick={() => navigate("/account")}>
+            <FaRegUser size={22} />
+          </div>}
+          { showCart && <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
+            <ShoppingCartOutlined size={22} />
+            {cartCount > 0 && (
+              <div className="absolute -top-2 -right-1 bg-black text-white text-[10px] font-bold rounded-full px-1">
+                {cartCount}
+              </div>
+            )}
+          </div>}
+        </div>
+      </div>
+
+      {/* Drawer */}
+      {toggle && (
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-70 z-50">
+          <div className="fixed top-0 left-0 h-full w-64 bg-white p-4 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <FaX size={20} className="cursor-pointer" onClick={() => setToggle(false)} />
+              <img src="/src/assets/cwift.png" alt="Logo" className="h-6" />
+            </div>
+            {/* Drawer Content */}
+            <div>
+              <p className="text-sm text-gray-700 font-semibold cursor-pointer">NEED HELP?</p>
+              <p
+                className="text-sm text-gray-700 font-semibold cursor-pointer mt-2"
+                onClick={() => navigate("/account")}
+              >
+                MY CWIFT ACCOUNT
+              </p>
+              {/* Add other drawer items here */}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Header;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <div className='menu-item' onClick={() => setToggle(!toggle)}>
-    <FaBars size={18} color={'grey'}/>
-</div> */}
-
-
-
-
-{/* Drawer items */}
-{/* {toggle && 
-    <div className='drawer-region'>
-        <div className="drawer" onTouchOutCapture={() => setToggle(false)}>
-            <div style={{color: 'grey', fontSize: 20, display: 'flex', alignItems: 'center', paddingBlock: 20}}>
-                <FaX size={16} color={'black'} onClick={() => setToggle(false)} style={{fontWeight: '900'}}/>
-                <img src='/src/assets/cwift.png' height={16} width={80} style={{marginLeft: 15}} />
-            </div>
-        </div>
-    </div>
-}  */}
-
-
-{/* <div className='drawer-items'>
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopStyle: 'solid', borderBottomStyle: 'solid', borderWidth: 0, borderColor: 'light-grey', paddingBlock: 4, cursor: 'pointer'}}>
-        <div style={{fontSize: 10, fontWeight: '600', color: 'grey'}}>NEED HELP?</div>
-        <IoIosArrowForward color={'grey'}/>
-    </div>
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopStyle: 'solid', borderBottomStyle: 'solid', borderWidth: 0, borderColor: 'light-grey', paddingBlock: 4, cursor: 'pointer'}}
-        onClick={() => navigate('/account')}>
-        <div style={{fontSize: 10, fontWeight: '600', color: 'grey'}}>MY CWIFT ACCOUNT</div>
-        <IoIosArrowForward color={'grey'}/>
-    </div>
-
-    <p style={{fontSize: 12, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <HiOutlineInboxIn size={20} color={'grey'}/></span> Inbox</p>
-    <p style={{fontSize: 12, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <MdOutlineRateReview size={20} color={'grey'}/></span> Pending Reviews</p>
-    <p style={{fontSize: 12, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <RiCoupon4Line size={20} color={'grey'}/></span> Vouchers</p>
-    <p style={{fontSize: 12, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <LuShoppingBag size={20} color={'grey'}/></span> Orders</p>
-    <p style={{fontSize: 12, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <FaRegHeart size={20} color={'grey'}/></span> Saved Items</p>
-    <p style={{fontSize: 12, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <FaMoneyBill size={20} color={'grey'}/></span> CwiftPay Balance</p>
-
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopStyle: 'solid', borderBottomStyle: 'solid', borderWidth: 0, borderColor: 'light-grey', paddingBlock: 4}}>
-        <div style={{fontSize: 10, fontWeight: '600', color: 'grey'}}>ITEM CATEGORIES</div>
-        <div style={{fontSize: 10, color: 'orange'}}>See All</div>
-    </div>
-
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <IoPhonePortraitOutline size={20} color={'grey'}/></span>Phones & Tablets</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <RiHomeOfficeLine size={20} color={'grey'}/></span> Home & Office</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <PiTelevisionSimpleBold size={20} color={'grey'}/></span> Electronics</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <GiHealthPotion size={20} color={'grey'}/></span> Health & Beauty</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <GiClothes size={20} color={'grey'}/></span> Fashion</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <HiOutlineComputerDesktop size={20} color={'grey'}/></span> Computing</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <MdOutlineSportsGymnastics size={20} color={'grey'}/></span> Sporting Goods</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <MdOutdoorGrill size={20} color={'grey'}/></span> Garden & Outdoor</p>
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}}><span style={{marginRight: 10}}> <SiPcgamingwiki size={20} color={'grey'}/></span> Gaming</p>
-    
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopStyle: 'solid', borderBottomStyle: 'solid', borderWidth: 0, borderColor: 'light-grey', paddingBlock: 4}}>
-        <div style={{fontSize: 10}}>MORE SERVICES</div>
-        <div style={{fontSize: 10, color: 'orange'}}>Explore</div>
-    </div>
-
-    <p style={{fontSize: 14, display: 'flex', alignItems: 'center'}} onClick={() => navigate('/add-item')}><span style={{marginRight: 10}}> <MdOutlineSell size={22} color={'grey'}/></span> Sell on Cwift</p>
-
-
-
-
-
-</div> */}
