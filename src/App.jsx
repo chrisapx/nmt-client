@@ -15,14 +15,17 @@ import LoadingSpinner from './global/LoadingSpinner';
 import { LoadingProvider } from './context/LoaderContext';
 import DesktopMessage from './client/components/DesktopMessage';
 
-const Details = lazy(() => import('./client/pages/details/Details'))
-const Home = lazy(() => import('./client/pages/home/Home'))
+const Details = lazy(() => import('./client/pages/Details'))
+const OrderStatus = lazy(() => import('./client/pages/OrderStatus'))
+const OrderDetails = lazy(() => import('./client/pages/OrderDetails'))
+const OrderSuccess = lazy(() => import('./client/pages/OrderSuccess'))
+const Home = lazy(() => import('./client/pages/Home'))
 const SearchPage = lazy(() => import('./main-pages/search/SearchPage'))
 const SearchResults = lazy(() => import('./main-pages/search-results/MainSearchResults'))
 const NotFoundPage = lazy(() => import('./main-pages/notFound/NotFound'))
-const Cart = lazy(() => import('./client/pages/cart/Cart'))
+const Cart = lazy(() => import('./client/pages/Cart'))
 const Account = lazy(() => import('./main-pages/profile/Account'))
-const Checkout = lazy(() => import('./client/pages/checkout/Checkout'))
+const Checkout = lazy(() => import('./client/pages/Checkout'))
 const Payment = lazy(() => import('./main-pages/payment/Payment'))
 const MainListing = lazy(() => import('./main-pages/listings/MainListing'))
 const Login = lazy(() => import('./auth-pages/login/LoginPage'))
@@ -51,6 +54,9 @@ function App() {
                     <Route path="/account" element={<Account />} />
                     <Route path="/checkout/:totalPrice?" element={<Checkout />} />
                     <Route path="/payment/:pstatus" element={<Payment />} />
+                    <Route path="/order-success" element={<OrderSuccess />} />
+                    <Route path="/order-status/:orderId?" element={<OrderStatus />} />
+                    <Route path="/order-details/:orderId?" element={<OrderDetails />} />
                     <Route path="/listings/:category" element={<MainListing />} />
                     <Route path="/add-item" element={<AddItem />} />
                     <Route path='/admin-home' element={<AdminHome/>}/>
