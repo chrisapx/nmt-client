@@ -4,7 +4,7 @@ import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { MdOutlineEditNote, MdRadioButtonChecked, MdRadioButtonUnchecked } from 'react-icons/md'
 import { RiBankCardLine } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
-import Counter from '../../components/Counter'
+import Counter from '../components/Counter'
 
 const Checkout = () => {
     const [itemCount, setItemCount] = useState(1);

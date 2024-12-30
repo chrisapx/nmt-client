@@ -26,7 +26,7 @@ const Counter = ({ count, onChange }) => {
     <div className="flex gap-2 items-center">
       <div
         onClick={handleDecrement}
-        className={`cursor-pointer p-2 rounded ${
+        className={`cursor-pointer p-1 rounded ${
           _count > 1 ? 'bg-gray-200' : 'text-gray-400 bg-gray-100'
         } rounded-full`}
       >
@@ -35,7 +35,7 @@ const Counter = ({ count, onChange }) => {
       <p className="text-md">{_count}</p>
       <div
         onClick={handleIncrement}
-        className="cursor-pointer p-2 rounded bg-gray-200 rounded-full"
+        className="cursor-pointer p-1 rounded bg-gray-200 rounded-full"
       >
         <BiPlus />
       </div>

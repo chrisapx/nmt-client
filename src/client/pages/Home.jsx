@@ -1,10 +1,10 @@
 import { PiMapPinDuotone } from 'react-icons/pi';
 import { useEffect, useState, useRef } from 'react';
-import Header from '../../../components/header/Header';
-import ProductCard from '../../components/ProductCard';
-import SearchBar from '../../components/SearchBar';
-import { useListings } from '../../../hooks/useListings';
-import LoaderIcon from '../../../global/LoaderIcon';
+import { useListings } from '../../hooks/useListings';
+import Header from '../../components/header/Header';
+import ProductCard from '../components/ProductCard';
+import SearchBar from '../components/SearchBar';
+import LoaderIcon from '../../global/LoaderIcon';
 
 const Home = () => {
   const [deliveryAddress, setDeliveryAddress] = useState();
@@ -53,13 +53,11 @@ const Home = () => {
               <ProductCard key={item.id || index} item={item} />
             ))}
           </div>
-          {/* Show the loader icon when loading more pages */}
           {loading && hasMore && (
             <div className="flex justify-center my-4">
               <LoaderIcon />
             </div>
           )}
-          {/* Invisible element for triggering the IntersectionObserver */}
           {!loading && hasMore && <div ref={observerRef} className="h-10"></div>}
         </section>
       </div>
