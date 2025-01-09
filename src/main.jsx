@@ -3,20 +3,17 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
-import { ListingProvider } from './context/ListingContext.jsx'
 import ContextProvider from './context/ContextProvider.jsx'
-import { UserProvider } from './context/UserContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-    <UserProvider>
-      <ContextProvider>
-        <ListingProvider>
+      <AuthProvider>
+        <ContextProvider>
           <App />
-        </ListingProvider>
-      </ContextProvider>
-    </UserProvider>
+        </ContextProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

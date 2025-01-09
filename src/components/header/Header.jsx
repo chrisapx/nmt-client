@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { FaRegUser, FaSearch } from "react-icons/fa";
-import { FaAngleLeft, FaCartShopping, FaX } from "react-icons/fa6";
+import { FaRegUser } from "react-icons/fa";
+import { FaAngleLeft, FaX } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { CgMenu } from "react-icons/cg";
 import { ShoppingCartOutlined } from "@mui/icons-material";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
 
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(1);
   const [toggle, setToggle] = useState(false);
+  const { dispatchAuth } = useAuth();
 
   return (
     <div className="flex flex-col">
@@ -31,7 +33,7 @@ const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          { showUser && <div className="cursor-pointer" onClick={() => navigate("/account")}>
+          { showUser && <div className="cursor-pointer" onClick={() => dispatchAuth(true) }>
             <FaRegUser size={22} />
           </div>}
           { showCart && <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>

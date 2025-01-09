@@ -6,7 +6,7 @@ import { BsFillTagFill } from 'react-icons/bs';
 import LoaderIcon from '../../global/LoaderIcon';
 import { useListings } from '../../hooks/useListings';
 import ProductCard from '../components/ProductCard';
-import { Download, OpenInBrowser } from '@mui/icons-material';
+import { OpenInBrowser } from '@mui/icons-material';
 
 const Details = () => {
   const observerRef = useRef();
@@ -37,7 +37,7 @@ const Details = () => {
     const fetchItem = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}items/${itemID}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}products/${itemID}`);
         const json = await response.json();
         setItem(json);
         console.log(json);
@@ -98,6 +98,8 @@ const Details = () => {
                   src={image?.url}
                   loading="lazy"
                   alt={item.name}
+                  width={"100%"}
+                  height={"100%"}
                   className="object-cover"
                 />
               </div>
@@ -132,17 +134,17 @@ const Details = () => {
 
         <section className="py-2 bg-white px-3">
           <p className="font-bold text-md py-2">User manual / Guide</p>
-          {!item?.userGuide?.url ? (
+          {item?.userManual ? (
             <div className="flex gap-8">
-              <a
-                href={item?.coverPhoto?.url}
+              {/* <a
+                href={item?.userManual?.url + "?response-cache-control=no-store"}
                 download
                 className="text-xs text-blue-700 flex items-center gap-2"
               >
                 Download manual <Download />
-              </a>
+              </a> */}
               <a
-                href={item?.coverPhoto?.url}
+                href={item?.userManual?.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-blue-700 flex items-center gap-2"
