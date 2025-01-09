@@ -1,75 +1,29 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy } from 'react';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Route, Routes } from 'react-router-dom'
-import AddItem from './seller-pages/add-item/AddItem'
-import { CartProvider } from './context/CartContext'
-import AdminHome from './seller-pages/home-page/AdminHome'
-import { ListingProvider } from './context/ListingContext'
-import Notification from './components/Notification'
-import Loading from './actions/utils/Loader'
-import OtpDialogue from './auth-pages/user/OtpDialogue'
-import PhotosAction from './actions/PhotosAction'
-import LoginDialogue from './auth-pages/user/Login';
-import LoadingSpinner from './global/LoadingSpinner';
+import { Route, Routes } from 'react-router-dom';
 import { LoadingProvider } from './context/LoaderContext';
 import DesktopMessage from './client/components/DesktopMessage';
-
-const Details = lazy(() => import('./client/pages/Details'))
-const OrderStatus = lazy(() => import('./client/pages/OrderStatus'))
-const OrderDetails = lazy(() => import('./client/pages/OrderDetails'))
-const OrderSuccess = lazy(() => import('./client/pages/OrderSuccess'))
-const Home = lazy(() => import('./client/pages/Home'))
-const SearchPage = lazy(() => import('./main-pages/search/SearchPage'))
-const SearchResults = lazy(() => import('./main-pages/search-results/MainSearchResults'))
-const NotFoundPage = lazy(() => import('./main-pages/notFound/NotFound'))
-const Cart = lazy(() => import('./client/pages/Cart'))
-const Account = lazy(() => import('./main-pages/profile/Account'))
-const Checkout = lazy(() => import('./client/pages/Checkout'))
-const Payment = lazy(() => import('./main-pages/payment/Payment'))
-const MainListing = lazy(() => import('./main-pages/listings/MainListing'))
-const Login = lazy(() => import('./auth-pages/login/LoginPage'))
-const Signup = lazy(() => import('./auth-pages/signup/Signup'))
-
+import LoadingSpinner from './global/LoadingSpinner';
+import ClientRoutes from './layout/ClientRoutes';
+import AdminRoutes from './layout/AdminRoutes';
+import AuthModel from './components/model_content/AuthModel';
 
 function App() {
   return (
     <div>
-      <Notification />
-      <Loading/>
-      <PhotosAction/>
-      <OtpDialogue/>
-      <DesktopMessage/>
-      <LoginDialogue/>
-        <LoadingProvider>
-          <ListingProvider>
-            <CartProvider>
-              <Suspense fallback={ <LoadingSpinner/> }>
-                <Routes>
-                    <Route path="/" element={ <Home/> } />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/_sr/:input" element={<SearchResults />} />
-                    <Route path="/details/:itemID?" element={<Details />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/account" element={<Account />} />
-                    <Route path="/checkout/:totalPrice?" element={<Checkout />} />
-                    <Route path="/payment/:pstatus" element={<Payment />} />
-                    <Route path="/order-success" element={<OrderSuccess />} />
-                    <Route path="/order-status/:orderId?" element={<OrderStatus />} />
-                    <Route path="/order-details/:orderId?" element={<OrderDetails />} />
-                    <Route path="/listings/:category" element={<MainListing />} />
-                    <Route path="/add-item" element={<AddItem />} />
-                    <Route path='/admin-home' element={<AdminHome/>}/>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="*" element={<NotFoundPage />} /> 
-                </Routes>
-              </Suspense>
-            </CartProvider>
-          </ListingProvider>
-        </LoadingProvider>
+      <DesktopMessage />
+      <LoadingProvider>
+        <AuthModel />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/*" element={<ClientRoutes />} />
+            <Route path="/dashboard/*" element={<AdminRoutes />} />
+          </Routes>
+        </Suspense>
+      </LoadingProvider>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

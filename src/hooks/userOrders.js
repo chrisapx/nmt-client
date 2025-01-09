@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { api_urls } from '../utils/ResourceUrls';
+import { getUserToken } from '../components/utils/AuthCookiesManager';
+const token  = getUserToken();
 
-export function useListings(page = 0, size = 10, filters = {}, reload) {
-  const [listings, setListings] = useState([]);
+export function useOrders(page = 0, size = 10, filters = {}, reload) {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
@@ -10,13 +12,19 @@ export function useListings(page = 0, size = 10, filters = {}, reload) {
   const stableFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchOrders = async () => {
       setLoading(true);
       try {
-        const response = await fetch(api_urls.items.get_all(page, size));
+        const response = await fetch(api_urls.orders.get_all,
+            { 
+                headers : {
+                    "Authorization" : `Bearer ${token}`
+                }
+            }
+        );
         if (!response.ok) throw new Error(await response.text());
         const data = await response.json();
-        setListings((prev) => {
+        setOrders((prev) => {
           const uniqueItems = [...prev, ...data].filter(
             (item, index, array) =>
               array.findIndex((i) => i.id === item.id) === index
@@ -34,8 +42,8 @@ export function useListings(page = 0, size = 10, filters = {}, reload) {
       }
     };
 
-    fetchItems();
+    fetchOrders();
   }, [page, size, stableFilters, reload]);
 
-  return { listings, loading, hasMore, error };
+  return { orders, loading, hasMore, error };
 }
