@@ -190,7 +190,7 @@ export default function AuthModel() {
                             onClick={handleSubmit}  
                             className="bg-red-500 py-3 w-full text-white text-center"/>
 
-                        <p className={`bg-green-100 text-sm text-green-700 p-3 truncate ${!success && 'hidden'}`}>{JSON.stringify(success)}</p>
+                        <p className={`bg-green-100 text-sm text-green-700 p-3 truncate ${!success && 'hidden'}`}>{success.toString()}</p>
 
                         <p className="text-center cursor-pointer text-sm font-[600] underline text-gray-300">Forgom password?</p>
 
