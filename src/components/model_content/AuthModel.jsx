@@ -105,7 +105,6 @@ export default function AuthModel() {
             });
             let resData = await response.text();
             if (response.ok){
-                let data = await response.text();
                 setSuccess(resData);
             } else {
                 setError(resData);
