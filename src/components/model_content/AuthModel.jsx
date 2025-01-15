@@ -78,11 +78,11 @@ export default function AuthModel() {
                 console.log(data);
                 setAuthUser(data.user);
                 setUserToken(data.token);
-                setSuccess("Success, closing the form");
+                setSuccess("Success, redirecting you ...");
                 setTimeout(() => {
                     dispatchAuth(false);
                     handleRefresh();
-                }, 500);
+                }, 2000);
             } else {
                 setError(await response.text());
             }
