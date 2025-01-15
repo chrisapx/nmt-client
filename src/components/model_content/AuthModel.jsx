@@ -82,7 +82,8 @@ export default function AuthModel() {
                 setTimeout(() => {
                     dispatchAuth(false);
                     handleRefresh();
-                }, 2000);
+                    window.location.reload();
+                }, 300);
             } else {
                 setError(await response.text());
             }
