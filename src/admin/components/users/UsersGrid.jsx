@@ -78,7 +78,7 @@ const UsersGrid = ({ users = [], isLoading = false }) => {
                     {row.userId || "--"}
                   </td>
                   <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
-                    {row.FullName || "--"}
+                    {row.fullName || "--"}
                   </td>
                   <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
                     {row.email || "--"}

@@ -10,6 +10,9 @@ import AdminRoutes from './layout/AdminRoutes';
 import AuthModel from './components/model_content/AuthModel';
 
 function App() {
+  const hostname = window.location.hostname;
+  const isAdminSubdomain = hostname.startsWith('dashboard');
+
   return (
     <div>
       <DesktopMessage />
@@ -17,8 +20,7 @@ function App() {
         <AuthModel />
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
-            <Route path="/*" element={<ClientRoutes />} />
-            <Route path="/dashboard/*" element={<AdminRoutes />} />
+            <Route path="*" element={ isAdminSubdomain ? <AdminRoutes/> : <ClientRoutes />} />
           </Routes>
         </Suspense>
       </LoadingProvider>

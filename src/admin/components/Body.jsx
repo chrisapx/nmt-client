@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Products from './Products';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Categories from './Categories';
 import Orders from './Orders';
 import Users from './Users';
 
 const Body = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      navigate('/products');
+    }
+  }, [location, navigate]);
 
   const renderContent = () => {
     if (location.pathname.includes('product')) {

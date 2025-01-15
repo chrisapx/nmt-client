@@ -82,7 +82,7 @@ export default function AuthModel() {
                 setTimeout(() => {
                     dispatchAuth(false);
                     handleRefresh();
-                }, 2000);
+                }, 500);
             } else {
                 setError(await response.text());
             }
@@ -133,14 +133,11 @@ export default function AuthModel() {
 
     return (
         <div className="card flex justify-center">
-            {/* <Button label="Login" icon="pi pi-user" onClick={() => dispatchAuth(true)} /> */}
             <Dialog
                 visible={showAuth}
                 onHide={() => {if (!showAuth) return; dispatchAuth(false); }}
                 content={({ hide }) => (
-                    <div className="grid grid-cols-1 px-12 py-5 gap-4 bg-white rounded-md md:max-w-[25vw]" 
-                        // style={{ borderRadius: '12px', backgroundImage: 'radial-gradient(circle at left top, var(--red-200), var(--red-400))' }}
-                        >
+                    <div className="grid grid-cols-1 px-12 py-5 gap-4 bg-white rounded-md md:max-w-[25vw]">
                         <div className="absolute right-3 top-3">
                          <Close className="cursor-pointer" title="Close" onClick={() => dispatchAuth(false)} />
                         </div>

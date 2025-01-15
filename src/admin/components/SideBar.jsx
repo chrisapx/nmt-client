@@ -1,14 +1,40 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { isAuthenticated, logout } from "../../components/utils/AuthCookiesManager";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 const SideBar = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    if (!isAuthenticated() || user?.role !== 'ADMIN') {
+      navigate('/un-authorised');
+    }
+  }
+
+  const showLogoutConfirmation = () => {
+    confirmDialog({
+      message: "Are you sure you want to log out?",
+      header: "Confirm Logout",
+      icon: "pi pi-exclamation-triangle",
+      accept: handleLogout,
+      reject: () => console.log("Logout canceled"),
+    });
+  };
+
   return (
     <div className="w-60 bg-gray-100 flex rounded-2xl m-4 text-xs flex-col h-[88vh] shadow-lg justify-between mt-3 py-5 font-[600]">
+      <ConfirmDialog 
+        className=""
+        contentClassName="text-red-500"
+        acceptIcon="pi pi-accept"
+        rejectIcon="pi pi-times"
+        acceptClassName="text-sm mx-2 py-1 px-4 bg-blue-500 text-white" 
+        rejectClassName="text-sm mx-2 py-1 px-4 border text-black" />
       <ul className="space-y-4">
-        {/* My Products */}
         <li>
           <NavLink
-            to="/dashboard/my-products"
+            to="/products"
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 pl-6 ${
                 isActive
@@ -19,16 +45,12 @@ const SideBar = () => {
           >
             <i className="pi pi-box"></i>
             <span>My Products</span>
-            {/* <span className="ml-auto bg-gray-200 text-xs p-1 rounded-full">
-              6
-            </span> */}
           </NavLink>
         </li>
 
-        {/* Product Categories */}
         <li>
           <NavLink
-            to="/dashboard/i-categories"
+            to="/i-categories"
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 pl-6 ${
                 isActive
@@ -39,16 +61,11 @@ const SideBar = () => {
           >
             <i className="pi pi-th-large"></i>
             <span>Categories</span>
-            {/* <span className="ml-auto bg-gray-200 text-xs p-1 rounded-full">
-              6
-            </span> */}
           </NavLink>
         </li>
-
-        {/* My Orders */}
         <li>
           <NavLink
-            to="/dashboard/my-orders"
+            to="/my-orders"
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 pl-6 ${
                 isActive
@@ -59,16 +76,12 @@ const SideBar = () => {
           >
             <i className="pi pi-shopping-cart"></i>
             <span>My Orders</span>
-            {/* <span className="ml-auto bg-gray-200 text-xs p-1 rounded-full">
-              31
-            </span> */}
           </NavLink>
         </li>
 
-        {/* Users */}
         <li>
           <NavLink
-            to="/dashboard/users"
+            to="/users"
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 pl-6 ${
                 isActive
@@ -79,18 +92,14 @@ const SideBar = () => {
           >
             <i className="pi pi-users"></i>
             <span>Users</span>
-            {/* <span className="ml-auto bg-gray-200 text-xs p-1 rounded-full">
-              31
-            </span> */}
           </NavLink>
         </li>
       </ul>
 
       <ul className="space-y-4">
-        {/* My Store */}
-        <li>
+        <li className="line-through">
           <NavLink
-            to="/dashboard/my-store"
+            to="/my-store"
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 pl-6 ${
                 isActive
@@ -104,10 +113,9 @@ const SideBar = () => {
           </NavLink>
         </li>
 
-        {/* Settings */}
-        <li>
+        <li className="line-through">
           <NavLink
-            to="/dashboard/settings"
+            to="/settings"
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 pl-6 ${
                 isActive
@@ -119,6 +127,17 @@ const SideBar = () => {
             <i className="pi pi-cog"></i>
             <span>Settings</span>
           </NavLink>
+        </li>
+
+        <li className="border-t-2 pt-8">
+          <p
+            onClick={showLogoutConfirmation}
+            className="flex items-center font-bold gap-3 px-4 pl-6 text-red-600 hover:text-red-700 cursor-pointer"
+            aria-label="Log out"
+          >
+            <i className="pi pi-sign-out"></i>
+            <span>Log Out</span>
+          </p>
         </li>
       </ul>
     </div>

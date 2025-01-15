@@ -1,6 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { getAuthUser, isAuthenticated } from '../../components/utils/AuthCookiesManager';
+const user = getAuthUser();
+
+const getInitials = (fullName) => {
+  if (!fullName) return '';
+  const names = fullName.split(' ');
+  return names.map((name) => name[0].toUpperCase()).join('');
+};
 
 const IconWithBadge = ({ iconClass, badgeCount, ariaLabel }) => (
   <div className="relative flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer" role="button" aria-label={ariaLabel}>
@@ -40,10 +48,15 @@ const Header = ({ notificationCount = 0 }) => {
 
         <IconWithBadge iconClass="pi pi-bell text-lg" badgeCount={notificationCount} ariaLabel="Notifications" />
 
-        <button onClick={() => dispatchAuth(true)}>
-          <IconWithBadge iconClass="pi pi-user text-lg cursor-pointer" ariaLabel="User Profile" />
-        </button>
-
+        {isAuthenticated ? (
+          <div className="font-bold text-gray-700 bg-gray-200 p-2 rounded-full" title={`Already logged in as ${user?.fullName}`}>
+            {getInitials(user?.fullName)}
+          </div>
+        ) : (
+          <button onClick={() => dispatchAuth(true)}>
+            <IconWithBadge iconClass="pi pi-user text-lg cursor-pointer" ariaLabel="User Profile" />
+          </button>
+        )}
         <div className="relative flex items-center gap-2 cursor-pointer">
           <span className="font-semibold text-gray-600 hover:text-black">English</span>
           <i className="pi pi-chevron-down text-gray-400"></i>

@@ -5,6 +5,8 @@ import { useLocation } from 'react-router-dom';
 const DesktopMessage = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const location = useLocation();
+  const hostname = window.location.hostname;
+  const isAdminSubdomain = hostname.startsWith('dashboard');
 
   useEffect(() => {
     const handleResize = () => {
@@ -17,10 +19,8 @@ const DesktopMessage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isDashboardPage = location.pathname.includes('dashboard');
-
   return (
-    isDesktop && !isDashboardPage && (
+    isDesktop && !isAdminSubdomain && (
       <div className="flex items-center justify-center h-[100vh]">
         <div className="text-center">
           <DesktopAccessDisabled className="text-xl" />

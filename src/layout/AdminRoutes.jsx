@@ -1,19 +1,24 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Dashboard from '../admin/pages/Dashboard';
-import { getAuthUser, isAuthenticated } from '../components/utils/AuthCookiesManager';
 import UnauthorisedPage from '../admin/pages/UnAuthorisedPage';
-const user = getAuthUser();
+import { isAuthenticated, getAuthUser, logout } from '../components/utils/AuthCookiesManager';
 
 const AdminRoutes = () => {
-    if(!isAuthenticated && user.role !== ADMIN) {
-        window.location.href = '/dashboard/un-authorised';
+  const navigate = useNavigate();
+  const user = getAuthUser();
+
+  useEffect(() => {
+    if (!isAuthenticated() || user?.role !== 'ADMIN') {
+      logout();
+      navigate('/un-authorised');
     }
+  }, [navigate, isAuthenticated()]);
+
   return (
     <Routes>
-      <Route path="/*" element={<Dashboard />} />
+      <Route path="*" element={<Dashboard />} />
       <Route path="/un-authorised" element={<UnauthorisedPage />} />
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Routes>
   );
 };
