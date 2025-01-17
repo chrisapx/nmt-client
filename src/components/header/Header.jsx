@@ -106,9 +106,9 @@ const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
                     </div>
                   </div>
                 </header>
-                <section className="flex-1 p-4 space-y-4">
-                  <NavItem to="/orders" icon="pi-home" label="My Orders" />
-                  <NavItem to="/settings" icon="pi-cog" label="Settings" />
+                <section className="flex-1 p-4 space-y-4 line-through">
+                  <NavItem icon="pi-home" label="My Orders" />
+                  <NavItem icon="pi-cog" label="Settings" />
                 </section>
               </section>
               <footer className="p-4 border-t bg-gray-50">
