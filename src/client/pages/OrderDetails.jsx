@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
 import { useNavigate, useParams } from 'react-router-dom';
+import { isAuthenticated } from '../../components/utils/AuthCookiesManager';
 
 const OrderDetails = () => {
   const navigate = useNavigate();
@@ -15,6 +16,12 @@ const OrderDetails = () => {
   const deliveryFees = 5000;
   const totalCost = itemsTotal + deliveryFees;
 
+  useEffect(() => {
+    if(!isAuthenticated()){
+        navigate('/');
+    }
+  })
+
   const formatDate = (timestamp) =>
     new Intl.DateTimeFormat('en-GB', {
       dateStyle: 'medium',
@@ -24,7 +31,7 @@ const OrderDetails = () => {
   return (
     <>
       <div className="md:hidden h-screen">
-        <section className="sticky top-0 px-3 py-2 bg-white shadow-sm">
+        <section className="sticky top-0 px-3 pb-2 bg-white shadow-sm">
           <Header showBack />
         </section>
 

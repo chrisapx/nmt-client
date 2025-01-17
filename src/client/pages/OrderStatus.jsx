@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/header/Header";
+import { isAuthenticated } from "../../components/utils/AuthCookiesManager";
+import { useNavigate } from "react-router-dom";
 
 const OrderStatus = () => {
-  // Current status of the order
+  const navigate = useNavigate();
   const [currentStatus, setCurrentStatus] = useState("SHIPPED");
 
-  // Steps with better descriptions and formatted labels
   const steps = [
     { label: "PLACED", description: "Your order has been placed successfully." },
     { label: "CONFIRMED", description: "Your order has been confirmed by the seller." },
@@ -17,6 +18,12 @@ const OrderStatus = () => {
 
   const currentIndex = steps.findIndex((step) => step.label === currentStatus);
 
+  useEffect(() => {
+    if(!isAuthenticated()){
+        navigate('/');
+    }
+  })
+  
   return (
     <div className="md:hidden h-screen">
       <section className="sticky top-0 px-3 py-2 bg-white shadow-sm">

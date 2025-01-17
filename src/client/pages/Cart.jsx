@@ -8,8 +8,10 @@ import ProductCard from '../components/ProductCard';
 import LoaderIcon from '../../global/LoaderIcon';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { getUserToken } from '../../components/utils/AuthCookiesManager';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
+    const navigate = useNavigate();
     const observerRef = useRef();
     const [pages, setPages] = useState({ page: 0, size: 10 });
     const [productDetails, setProductDetails] = useState({});
@@ -72,8 +74,9 @@ const Cart = () => {
     }, [cart]);
 
     const handleCheckoutCart = () => {
-        alert("Check again tomorrow, checkout function will be ready");
-        console.log('Checkout process initiated.');
+        navigate("/checkout");
+        // alert("Check again tomorrow, checkout function will be ready");
+        // console.log('Checkout process initiated.');
     };
 
     const handleCountChange = (itemId, newCount) => {

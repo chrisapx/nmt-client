@@ -7,6 +7,7 @@ const token = getUserToken();
 export function useCart() {
   const [cart, setCart] = useState([]);
   const [totalCount, setTotalCount] = useState();
+  const [totalCost, setTotalCost] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -131,8 +132,9 @@ export function useCart() {
         },
       });
       if (!response.ok) throw new Error(await response.text());
-      const totalCost = await response.json();
-      return totalCost;
+      const _totalCost = await response.json();
+      setTotalCost(_totalCost);
+      return _totalCost;
     } catch (err) {
       console.error('Get total cost error:', err);
       setError(err.message || 'Failed to retrieve total cost');
@@ -166,11 +168,13 @@ export function useCart() {
 
   useEffect(() => {
     getTotalCartItemCount();
+    getCartTotalCost(cart?.cartId);
   }, [cart]);
 
   return {
     cart,
     totalCount,
+    totalCost,
     loading,
     error,
     fetchCart,
