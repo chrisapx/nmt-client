@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { api_urls } from '../utils/ResourceUrls';
+import { api_urls } from '../components/utils/ResourceUrls';
 
 export function useCategoriess(page = 0, size = 10, parentId, reload) {
   const [categories, setCategories] = useState([]);

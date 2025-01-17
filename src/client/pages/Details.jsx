@@ -7,13 +7,19 @@ import LoaderIcon from '../../global/LoaderIcon';
 import { useListings } from '../../hooks/useListings';
 import ProductCard from '../components/ProductCard';
 import { OpenInBrowser } from '@mui/icons-material';
+import { useCart } from '../../hooks/useCart';
+import { isAuthenticated } from '../../components/utils/AuthCookiesManager';
+import { useAuth } from '../../context/AuthContext';
 
 const Details = () => {
   const observerRef = useRef();
+  const { dispatchAuth } = useAuth();
   const { itemID } = useParams();
   const [pages, setPages] = useState({ page: 0, size: 10 });
   const { listings, loading, hasMore } = useListings(pages.page, pages.size);
   const [_loading, setLoading] = useState(false);
+  const { addItemToCart } = useCart();
+  const [ success, setSuccess] = useState("");
   const [item, setItem] = useState({
     name: '',
     description: '',
@@ -29,8 +35,22 @@ const Details = () => {
     console.log("Scroll to top triggered for itemID:", itemID);
   }, [item]);
 
-  const handleAddToCart = (item) => {
-    console.log('Add to cart');
+  const handleAddToCart = async () => {
+    const cartPayload = {
+      cartItems: [
+        {
+          productId: itemID,
+          quantity: 1,      
+        },
+      ],
+    };
+    const res = await addItemToCart(cartPayload);
+    if(res) {
+      setSuccess("Added item to cart");
+      setTimeout(() => {
+        setSuccess("");
+      }, 2000);
+    }
   };
 
   useEffect(() => {
@@ -77,9 +97,13 @@ const Details = () => {
   return (
     <>
       <div className="h-[100vh] md:hidden">
-        <div className="sticky top-0 py-2 z-50 bg-white px-3">
+        <div className="sticky top-0 pb-2 z-50 bg-white px-3">
           <Header showBack showCart showMenuIcon showUser />
+          { success && 
+            <p className='text-white bg-green-600 py-2 w-full font-bold text-center gap-3 px-4 truncate'><span className='pi pi-check-circle mr-3'/>{success}</p>
+          }
         </div>
+
 
         {!_loading && item?.photos?.length > 0 && (
           <Slider
@@ -88,19 +112,20 @@ const Details = () => {
             infinite={item?.photos?.length > 1}
             slidesToShow={1}
             speed={500}
+            centerMode
             slidesToScroll={1}
             autoplaySpeed={4000}
-            className="mb-6 h-auto px-3"
+            className="mb-6 px-3"
           >
             {item?.photos?.map((image, index) => (
-              <div key={index} className="h-auto w-full">
+              <div key={index}>
                 <img
                   src={image?.url}
                   loading="lazy"
                   alt={item.name}
-                  width={"100%"}
-                  height={"100%"}
-                  className="object-cover"
+                  // width={"100%"}
+                  // height={"100%"}
+                  className="object-cotain"
                 />
               </div>
             ))}
@@ -184,12 +209,20 @@ const Details = () => {
         </section>
 
         <div className="sticky bottom-0 bg-white w-full shadow-2xl py-4 px-3 pb-16">
-          <div
-            className="select-none text-center bg-red-500 py-3 rounded-full text-white font-bold cursor-pointer"
-            onClick={() => handleAddToCart(item)}
-          >
-            Add to cart
-          </div>
+          { isAuthenticated() ? 
+            <div
+              className="select-none text-center bg-red-500 py-3 rounded-full text-white font-bold cursor-pointer"
+              onClick={handleAddToCart}
+            >
+              Add to cart
+            </div> 
+            :
+            <div
+              className="select-none text-center bg-red-500 py-3 rounded-full text-white font-bold cursor-pointer"
+              onClick={() => dispatchAuth(true)}
+            >Login to order
+            </div> 
+          }
         </div>
       </div>
       {/* Desktop view */}

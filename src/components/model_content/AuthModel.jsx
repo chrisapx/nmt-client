@@ -3,7 +3,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import { api_urls } from "../../utils/ResourceUrls";
+import { api_urls } from "../utils/ResourceUrls";
 import { Link } from "react-router-dom";
 import LoaderIcon from "../../global/LoaderIcon";
 import { setAuthUser, setUserToken } from "../utils/AuthCookiesManager";

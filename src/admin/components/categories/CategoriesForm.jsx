@@ -5,10 +5,10 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Close } from "@mui/icons-material";
 import { getAuthUser, getUserToken } from "../../../components/utils/AuthCookiesManager";
-import { api_urls } from "../../../utils/ResourceUrls";
 import CategoryTreeSelect from "../elements/CategorytreeSelect";
 import LoaderIcon from "../../../global/LoaderIcon";
 import { InputTextarea } from "primereact/inputtextarea";
+import { api_urls } from "../../../components/utils/ResourceUrls";
 const user = getAuthUser();
 const token = getUserToken();
 

@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { api_urls } from '../utils/ResourceUrls';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { api_urls } from '../components/utils/ResourceUrls';
 
 export function useListings(page = 0, size = 10, filters = {}, reload) {
   const [listings, setListings] = useState([]);
@@ -9,10 +9,9 @@ export function useListings(page = 0, size = 10, filters = {}, reload) {
 
   const stableFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      setLoading(true);
-      try {
+  const fetchItems = useCallback( async () => {
+    setLoading(true);
+    try {
         const response = await fetch(api_urls.items.get_all(page, size));
         if (!response.ok) throw new Error(await response.text());
         const data = await response.json();
@@ -32,10 +31,26 @@ export function useListings(page = 0, size = 10, filters = {}, reload) {
       } finally {
         setLoading(false);
       }
+  }, []);
+
+  const fetchItem = async (itemId) => {
+      setLoading(true);
+      try {
+        const response = await fetch(api_urls.items.get_by_id(itemId));
+        if (!response.ok) throw new Error(await response.text());
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        console.error('Fetch error:', err);
+        setError(err.message || 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
     };
-
+    
+  useEffect(() => {
     fetchItems();
-  }, [page, size, stableFilters, reload]);
+  }, [page, size, stableFilters, reload, fetchItems]);
 
-  return { listings, loading, hasMore, error };
+  return { listings, fetchItem, loading, hasMore, error };
 }

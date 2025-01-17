@@ -1,48 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 import Header from '../../components/header/Header';
 import { useListings } from '../../hooks/useListings';
+import { useCart } from '../../hooks/useCart';
 import Counter from '../components/Counter';
 import { Radio } from '@mui/material';
 import ProductCard from '../components/ProductCard';
 import LoaderIcon from '../../global/LoaderIcon';
 import { FaRegTrashCan } from 'react-icons/fa6';
+import { getUserToken } from '../../components/utils/AuthCookiesManager';
 
 const Cart = () => {
     const observerRef = useRef();
     const [pages, setPages] = useState({ page: 0, size: 10 });
-    const { listings, loading, hasMore } = useListings(pages.page, pages.size);
-    const [items, setItems] = useState([
-        {
-            itemId: 1,
-            selected: true,
-            name: 'Hot same resistant power bank',
-            category: 'Electrical and fragile',
-            price: 76000,
-            quantity: 1,
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            itemId: 2,
-            selected: false,
-            name: 'Durable phone case',
-            category: 'Impact-resistant and stylish',
-            price: 25000,
-            quantity: 1,
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            itemId: 3,
-            selected: true,
-            name: 'Wireless headphones',
-            category: 'Noise-cancelling technology',
-            price: 150000,
-            quantity: 1,
-            image: 'https://via.placeholder.com/150',
-        },
-    ]);
+    const [productDetails, setProductDetails] = useState({});
+    const [cartAmount, setCartAmount] = useState();
+    const { listings, fetchItem, loading: listingsLoading, hasMore } = useListings(pages.page, pages.size);
+    const {
+        cart,
+        loading,
+        error,
+        addItemToCart,
+        removeItemFromCart,
+        updateCartItemQuantity,
+        clearCart,
+        getCartTotalCost
+    } = useCart();
 
     useEffect(() => {
-        if (loading) return;
+        const getTotalCost = async () => {
+            setCartAmount(await getCartTotalCost(cart.cartId));
+        }
+        getTotalCost();
+    }, [cart]);
+
+    useEffect(() => {
+        if (listingsLoading) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
@@ -56,47 +48,81 @@ const Cart = () => {
         if (observerRef.current) observer.observe(observerRef.current);
 
         return () => observer.disconnect();
-    }, [loading, hasMore]);
+    }, [listingsLoading, hasMore]);
+
+    useEffect(() => {
+        const fetchProductDetails = async () => {
+          const details = {};
+          for (const item of cart.cartItems) {
+            if (!productDetails[item.productId]) {
+              try {
+                const response = await fetchItem(item.productId);
+                if (response) {
+                  console.log(`Product for cart item ${item.productId} is`, response);
+                  details[item.productId] = response;
+                }
+              } catch (err) {
+                console.error(`Failed to fetch product for item ${item.productId}:`, err);
+              }
+            }
+          }
+          setProductDetails((prev) => ({ ...prev, ...details }));
+        };
+        fetchProductDetails();
+    }, [cart]);
 
     const handleCheckoutCart = () => {
+        alert("Check again tomorrow, checkout function will be ready");
         console.log('Checkout process initiated.');
     };
 
     const handleCountChange = (itemId, newCount) => {
-        console.log('Updated count:', newCount, 'for', itemId);
+        console.log(itemId + " " + newCount)
+        updateCartItemQuantity(itemId, newCount);
     };
 
     const handleSelectCartItem = (e) => {
-        console.log('Id to select is:', e.target.value);
+        const itemId = e.target.value;
+        const item = cart.cartItems.find((item) => item.itemId === parseInt(itemId));
+        if (item) {
+            addItemToCart({ ...item, selected: !item.selected });
+        }
     };
 
     const handleSelectAllCartItem = () => {
-        console.log('selected All');
+        const allSelected = cart.cartItems.every((item) => item.selected);
+        cart.cartItems.forEach((item) => addItemToCart({ ...item, selected: !allSelected }));
     };
 
     const handleClearCart = () => {
-        confirm('Are you sure you want to clear the whole cart?');
+        if (confirm('Are you sure you want to clear the whole cart?')) {
+            clearCart(cart.cartId);
+        }
     };
 
-    const handleRemoveCartItem = (itemName) => {
-        confirm('Are you sure you want to delete ' + itemName + ' from cart?');
+    const handleRemoveCartItem = (itemId, itemName) => {
+        if (confirm(`Are you sure you want to delete ${itemName} from the cart?`)) {
+            removeItemFromCart(itemId);
+        }
     };
+
+    const totalAmount = cart.cartItems?.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <>
             <div className="md:hidden h-[100vh] w-[100vw] overflow-x-hidden">
-                <div className="sticky top-0 py-2 z-50 bg-white px-3">
-                    <Header showBack />
+                <div className="sticky top-0 z-50 bg-white px-3">
+                    <Header showBack showMenuIcon />
                 </div>
                 <div className="bg-gray-100 grid gap-2">
-                    <section className="px-3 py-4 bg-white">
-                        <p className="font-bold text-xl">Cart ({items?.length})</p>
+                    <section className="flex justify-between px-3 py-4 bg-white">
+                        <p className="font-bold text-xl">Cart ({cart.cartItems?.length})</p>
                         <div className="flex gap-2 items-center">
-                            <Radio
-                                checked={items?.some((item) => item?.filtered)}
+                            {/* <Radio
+                                checked={cart.cartItems?.every((item) => item.selected)}
                                 onChange={handleSelectAllCartItem}
                             />
-                            Select all items |
+                            Select all items | */}
                             <p
                                 onClick={handleClearCart}
                                 className="text-blue-700 underline select-none"
@@ -106,44 +132,48 @@ const Cart = () => {
                         </div>
                     </section>
                     <section className="grid gap-4 py-2 px-3 bg-white">
-                        {items.map((item, index) => (
+                        { cart.cartItems?.map((item, index) => { 
+                            const product = productDetails[item.productId];
+                        return (
                             <section key={index} className="flex gap-2 items-start">
-                                <Radio
+                                {/* <Radio
                                     checked={item?.selected}
                                     onChange={handleSelectCartItem}
                                     value={item?.itemId}
-                                />
+                                /> */}
                                 <div className="flex gap-3 w-full">
-                                    <div className="w-20 h-20 rounded-md bg-gray-100 flex-shrink-0">
+                                    <div className="w-25 h-20 rounded-md bg-gray-100 flex-shrink-0">
                                         <img
-                                            src={item?.image}
-                                            alt={item?.name}
+                                            src={product?.photos[0].url}
+                                            alt={product?.name}
                                             className="w-full h-full object-cover rounded-md"
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="truncate w-full text-md text-sm flex justify-between items-center">
-                                            {item?.name}{' '}
+                                        <p className="flex gap-4 w-full text-md text-sm flex justify-between items-center">
+                                            {product?.name || "--"}{' '}
                                             <span>
                                                 <FaRegTrashCan
-                                                    onClick={() => handleRemoveCartItem(item?.name)}
+                                                    onClick={() =>
+                                                        handleRemoveCartItem(item?.cartItemId, product?.name)
+                                                    }
                                                 />
                                             </span>
                                         </p>
-                                        <p className="text-gray-400 text-xs">{item?.category}</p>
+                                        <p className="text-gray-400 text-xs">{product?.category || "--"}</p>
                                         <div className="flex justify-between items-center mt-3">
-                                            <p className="font-bold text-sm">UGX {item?.price}</p>
+                                            <p className="font-bold text-sm">UGX {product?.price?.toLocaleString() || "--"}</p>
                                             <Counter
                                                 count={item?.quantity}
                                                 onChange={(newCount) =>
-                                                    handleCountChange(item?.itemId, newCount)
+                                                    handleCountChange(item?.cartItemId, newCount)
                                                 }
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </section>
-                        ))}
+                        )})}
                     </section>
 
                     <section className="pt-8 px-3 overflow-y-auto bg-white">
@@ -154,13 +184,13 @@ const Cart = () => {
                             ))}
                         </div>
 
-                        {loading && hasMore && (
+                        {listingsLoading && hasMore && (
                             <div className="flex justify-center my-4">
                                 <LoaderIcon />
                             </div>
                         )}
 
-                        {!loading && hasMore && (
+                        {!listingsLoading && hasMore && (
                             <div ref={observerRef} className="h-10"></div>
                         )}
                     </section>
@@ -168,7 +198,7 @@ const Cart = () => {
 
                 <div className="absolute bottom-0 bg-white shadow-2xl w-full py-4 px-3">
                     <p className="flex justify-between pb-2 font-bold">
-                        Total <span>UGX 288,283</span>
+                        Total <span>UGX {cartAmount?.toLocaleString()}</span>
                     </p>
                     <div
                         className="text-center bg-red-500 py-3 rounded-full text-white font-bold"

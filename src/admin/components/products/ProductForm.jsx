@@ -8,8 +8,8 @@ import { Dialog } from "primereact/dialog";
 import { Close, PendingSharp, Verified } from "@mui/icons-material";
 import { getAuthUser, getUserToken } from "../../../components/utils/AuthCookiesManager";
 import CategoryTreeSelect from "../elements/CategorytreeSelect";
-import { api_urls } from "../../../utils/ResourceUrls";
 import LoaderIcon from "../../../global/LoaderIcon";
+import { api_urls } from "../../../components/utils/ResourceUrls";
 const user = getAuthUser();
 const token = getUserToken();
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TreeSelect } from "primereact/treeselect";
-import { api_urls } from "../../../utils/ResourceUrls";
+import { api_urls } from "../../../components/utils/ResourceUrls";
 
 const CategoryTreeSelect = ({ value, onChange }) => {
   const [categories, setCategories] = useState([]);

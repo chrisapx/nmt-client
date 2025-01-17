@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { api_urls } from '../utils/ResourceUrls';
 import { getUserToken } from '../components/utils/AuthCookiesManager';
+import { api_urls } from '../components/utils/ResourceUrls';
 const token  = getUserToken();
 
 export function useUsers(page = 0, size = 10, reload) {
