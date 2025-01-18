@@ -37,7 +37,6 @@ const Cart = () => {
 
     useEffect(() => {
         if (listingsLoading) return;
-
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && hasMore) {
@@ -46,9 +45,7 @@ const Cart = () => {
             },
             { threshold: 1.0 }
         );
-
         if (observerRef.current) observer.observe(observerRef.current);
-
         return () => observer.disconnect();
     }, [listingsLoading, hasMore]);
 
@@ -75,8 +72,6 @@ const Cart = () => {
 
     const handleCheckoutCart = () => {
         navigate("/checkout");
-        // alert("Check again tomorrow, checkout function will be ready");
-        // console.log('Checkout process initiated.');
     };
 
     const handleCountChange = (itemId, newCount) => {
@@ -109,8 +104,6 @@ const Cart = () => {
         }
     };
 
-    const totalAmount = cart.cartItems?.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
     return (
         <>
             <div className="md:hidden h-[100vh] w-[100vw] overflow-x-hidden">
@@ -118,14 +111,14 @@ const Cart = () => {
                     <Header showBack showMenuIcon />
                 </div>
                 <div className="bg-gray-100 grid gap-2">
-                    <section className="flex justify-between px-3 py-4 bg-white">
-                        <p className="font-bold text-xl">Cart ({cart.cartItems?.length})</p>
+                    <section className={`${!cart?.cartItems?.length > 0 && 'hidden'} flex justify-between px-3 py-4 bg-white`}>
+                        <p className="font-bold text-xl">Cart ({cart?.cartItems?.length})</p>
                         <div className="flex gap-2 items-center">
                             {/* <Radio
                                 checked={cart.cartItems?.every((item) => item.selected)}
                                 onChange={handleSelectAllCartItem}
-                            />
-                            Select all items | */}
+                                />
+                                Select all items | */}
                             <p
                                 onClick={handleClearCart}
                                 className="text-blue-700 underline select-none"
@@ -134,8 +127,13 @@ const Cart = () => {
                             </p>
                         </div>
                     </section>
-                    <section className="grid gap-4 py-2 px-3 bg-white">
-                        { cart.cartItems?.map((item, index) => { 
+
+                    <section className={`${cart?.cartItems?.length > 0 && 'hidden'} text-center px-3 py-4 bg-white`}>
+                        <p className='text-center'>Cart is empty</p>
+                    </section>
+
+                    <section className={`${!cart?.cartItems?.length > 0 && 'hidden'} grid gap-4 py-2 px-3 bg-white`}>
+                        { cart?.cartItems?.map((item, index) => { 
                             const product = productDetails[item.productId];
                         return (
                             <section key={index} className="flex gap-2 items-start">
@@ -145,7 +143,7 @@ const Cart = () => {
                                     value={item?.itemId}
                                 /> */}
                                 <div className="flex gap-3 w-full">
-                                    <div className="w-25 h-20 rounded-md bg-gray-100 flex-shrink-0">
+                                    <div className="w-25 h-20 rounded-md bg-gray-100 flex-shrink-0" onClick={() => navigate("/details/" + product.itemId)}>
                                         <img
                                             src={product?.photos[0].url}
                                             alt={product?.name}
@@ -154,7 +152,7 @@ const Cart = () => {
                                     </div>
                                     <div className="flex-1">
                                         <p className="flex gap-4 w-full text-md text-sm flex justify-between items-center">
-                                            {product?.name || "--"}{' '}
+                                            <span onClick={() => navigate("/details/" + product.itemId)}>{product?.name || "--"}{' '}</span>
                                             <span>
                                                 <FaRegTrashCan
                                                     onClick={() =>
@@ -179,6 +177,7 @@ const Cart = () => {
                         )})}
                     </section>
 
+
                     <section className="pt-8 px-3 overflow-y-auto bg-white">
                         <p className="font-bold mb-4">More to love</p>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -201,14 +200,15 @@ const Cart = () => {
 
                 <div className="absolute bottom-0 bg-white shadow-2xl w-full py-4 px-3">
                     <p className="flex justify-between pb-2 font-bold">
-                        Total <span>UGX {cartAmount?.toLocaleString()}</span>
+                        Total <span>UGX {cartAmount?.toLocaleString() || "--"}</span>
                     </p>
-                    <div
-                        className="text-center bg-red-500 py-3 rounded-full text-white font-bold"
+                    <button
+                        disabled={cart?.cartItems?.length < 1}
+                        className={`${cart?.cartItems?.length < 1 ? "bg-red-300" : "bg-red-500"} text-center w-full py-3 rounded-full text-white font-bold`}
                         onClick={handleCheckoutCart}
                     >
                         Checkout
-                    </div>
+                    </button>
                 </div>
             </div>
 

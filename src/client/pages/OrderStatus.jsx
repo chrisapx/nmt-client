@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/header/Header";
 import { isAuthenticated } from "../../components/utils/AuthCookiesManager";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const OrderStatus = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { orderId } = useParams();
+  const order = location.state?.order;
   const [currentStatus, setCurrentStatus] = useState("SHIPPED");
-
+  
   const steps = [
-    { label: "PLACED", description: "Your order has been placed successfully." },
+    { label: "PENDING", description: "Your order is pending confirmation or payment." },
     { label: "CONFIRMED", description: "Your order has been confirmed by the seller." },
     { label: "PACKED", description: "Your order has been packed and is ready to ship." },
     { label: "SHIPPED", description: "Your order is on its way to the delivery hub." },
     { label: "OUT_FOR_DELIVERY", description: "Your order is out for delivery." },
     { label: "DELIVERED", description: "Your order has been delivered successfully." },
   ];
-
+  
   const currentIndex = steps.findIndex((step) => step.label === currentStatus);
-
+  
+  useEffect(() => {
+    console.log(order);
+    setCurrentStatus(order?.orderStatus);
+  }, [orderId])
   useEffect(() => {
     if(!isAuthenticated()){
         navigate('/');
@@ -30,7 +37,7 @@ const OrderStatus = () => {
         <Header showBack />
       </section>
 
-      <p className="px-8 py-4 text-gray-500">Track order #{'ORD-29719928980801'}</p>
+      <p className="px-8 py-4 text-gray-500">Track order #{orderId}</p>
 
       <div className="relative px-8 mt-8">
         {steps.map((step, index) => (

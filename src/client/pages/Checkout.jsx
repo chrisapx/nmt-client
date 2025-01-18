@@ -4,24 +4,32 @@ import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { MdOutlineEditNote, MdRadioButtonChecked, MdRadioButtonUnchecked } from 'react-icons/md'
 import { RiBankCardLine } from 'react-icons/ri'
 import { Link, useNavigate } from 'react-router-dom'
+import { InputTextarea } from "primereact/inputtextarea";
 import { useCart } from '../../hooks/useCart'
 import { isAuthenticated } from '../../components/utils/AuthCookiesManager'
 import { useListings } from '../../hooks/useListings'
+import { useOrders } from '../../hooks/useOrders'
 
 const Checkout = () => {
     const navigate = useNavigate();
     const { fetchItem } = useListings();
-    const [itemCount, setItemCount] = useState(1);
     const [productDetails, setProductDetails] = useState({});
     const deliveryFee = 3000;
-    const [order, setOrder] = useState({ cartId: "", orderInstructions: "", shippingFee: ""});
     const { cart, totalCost } = useCart();
+    const { createOrder } = useOrders();
+    const [order, setOrder] = useState({ cart: cart || {}, orderInstructions: "", shippingFee: deliveryFee || ""});
 
     useEffect(() => {
         if(!isAuthenticated()){
             navigate('/');
         }
-    })
+    },[])
+
+    useEffect(() => {
+        if (cart) {
+            setOrder((prev) => ({ ...prev, cart: cart }));
+        }
+    }, [cart]);    
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -48,9 +56,18 @@ const Checkout = () => {
 
     }
 
-    const handlePlaceOrder = () => {
-        confirm("Are you sure you want to place the order");
-    }
+    const handlePlaceOrder = async () => {
+        if (!order.cart?.cartId) {
+            alert("Cart is missing in order. Please try again.");
+            return;
+        }
+        if (confirm("Are you sure you want to place the order?")) {
+            const placedOrder = await createOrder(order);
+            navigate("/order-success/" + placedOrder.orderId);
+            console.log("Order:", JSON.stringify(order), "placed successfully");
+        }
+    };
+    
 
   return (
     <>
@@ -66,10 +83,11 @@ const Checkout = () => {
                     <p className='font-bold text-md py-2'>Shipping address</p>
                     <div className='flex justify-between'>
                         <div className='text-sm'>
-                            <p className='font-[500]'>Mwesigwa Christopher</p>
+                            {/* <p className='font-[500]'>Mwesigwa Christopher</p>
                             <p>+256758085749</p>
                             <p>City, street</p>
-                            <p>state, country, zip</p>
+                            <p>state, country, zip</p> */}
+                            <p>No Adress available</p>
                         </div>
                         <BsChevronRight onClick={toggleAddressMenu} className='m-2'/>
                     </div>
@@ -115,6 +133,7 @@ const Checkout = () => {
                                 </div>
                             </section>
                     )})}
+
                 </section>
                 <div className='border-t border-gray-100 my-4 px-3 py-2 flex justify-between'>
                     <div>
@@ -128,6 +147,19 @@ const Checkout = () => {
                     <p className='flex justify-between text-sm font-[500] border-b border-gray-100 py-2'>Subtotal <span>UGX {totalCost?.toLocaleString() || "--"}</span></p>
                     <p className='flex justify-between text-sm font-[500] border-b border-gray-100 py-2 text-gray-400 line-through'>Promo codes <span className='flex items-center'>Enter<BsChevronRight onClick={toggleAddressMenu} className=''/></span></p>
                     <p className='flex justify-between text-sm font-[500] border-b border-gray-100 py-2'>Shipping fee <span>UGX {deliveryFee?.toLocaleString() || "--"}</span></p>
+                </section>
+
+                <section className='px-3 py-2 bg-white'>
+                    <p className='font-bold text-md py-2'>Special instructions</p>
+                    <InputTextarea 
+                        id='instructions'
+                        value={order.orderInstructions} 
+                        placeholder='Write some special instructions you would love ...' 
+                        autoResize 
+                        onChange={(e) => setOrder((prev) => ({ ...prev, orderInstructions: e.target.value}))} 
+                        rows={2} cols={30} 
+                        className='w-full p-3 border focus:border-gray-300'
+                    />
                 </section>
                 <p className='py-3 text-gray-500 text-sm px-3 font-[400] bg-gray-100 mb-32'>Upon clicking 'Place Order', i confirm i have read and acknowledged all <a href="" className='text-blue-600'>terms and policies</a></p>
             </section>

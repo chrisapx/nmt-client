@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { IoReload } from "react-icons/io5";
-import { BiPlus } from "react-icons/bi";
-import CategoriesGrid from "./categories/CategoriesGrid";
-import { useOrders } from "../../hooks/userOrders";
+import { useOrders } from "../../hooks/useOrders";
 import OrdersGrid from "./orders/OrdersGrid";
 
 const Orders = () => {

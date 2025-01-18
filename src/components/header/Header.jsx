@@ -6,7 +6,6 @@ import { ShoppingCartOutlined } from "@mui/icons-material";
 import { Sidebar } from 'primereact/sidebar';
 import { useAuth } from "../../context/AuthContext";
 import { getAuthUser, isAuthenticated, logout } from "../utils/AuthCookiesManager";
-import { useCart } from "../../hooks/useCart";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 const user = getAuthUser();
@@ -16,10 +15,9 @@ const getInitials = (fullName) => {
   return names.map((name) => name[0].toUpperCase()).join('');
 };
 
-const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
+const Header = ({ showBack, showMenuIcon, showUser, showCart, cartCount }) => {
   const navigate = useNavigate();
-  const { totalCount } = useCart();
-  const { dispatchAuth, showAuth } = useAuth();
+  const { dispatchAuth } = useAuth();
   const [toggle, setToggle] = useState(false);
 
   const handleLogout = () => {
@@ -36,6 +34,14 @@ const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
       reject: () => console.log("Logout canceled"),
     });
   };
+
+  const handleCartClick = () => {
+    if(cartCount> 0){
+      navigate("/cart")
+    } else {
+      alert("Your cart is empty");
+    }
+  }
 
 
   return (
@@ -67,11 +73,11 @@ const Header = ({ showBack, showMenuIcon, showUser, showCart }) => {
               <IconWithBadge iconClass="pi pi-user text-lg cursor-pointer" ariaLabel="User Profile" />
             </button>
           )}
-          { isAuthenticated() && showCart && <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
+          { isAuthenticated() && showCart && <div className="relative cursor-pointer" onClick={handleCartClick}>
             <ShoppingCartOutlined size={22} />
-            {totalCount > 0 && (
+            {cartCount > 0 && (
               <div className="absolute -top-2 -right-1 bg-black text-white text-[10px] font-bold rounded-full px-1">
-                {totalCount || "--"}
+                {cartCount || "--"}
               </div>
             )}
           </div>}

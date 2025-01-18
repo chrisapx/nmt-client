@@ -20,7 +20,7 @@ const ClientRoutes = () => {
       {/* <Route path="/account" element={<Account />} /> */}
       <Route path="/checkout/:totalPrice?" element={<Checkout />} />
       {/* <Route path="/payment/:pstatus" element={<Payment />} /> */}
-      <Route path="/order-success" element={<OrderSuccess />} />
+      <Route path="/order-success/:orderId?" element={<OrderSuccess />} />
       <Route path="/order-status/:orderId?" element={<OrderStatus />} />
       <Route path="/order-details/:orderId?" element={<OrderDetails />} />
       {/* <Route path="*" element={<NotFoundPage />} /> */}

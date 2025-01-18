@@ -25,7 +25,17 @@ export const api_urls = {
         check_account: (email) => `${userBaseUrl}users/account_status?email=${email}`,
     },
     orders: {
-        get_all: (page, size) => `${orderBaseUrl}orders?page=${page}&size=${size}`,
+        create: `${orderBaseUrl}orders`,
+        get_by_id: (orderId) => `${orderBaseUrl}orders/order?orderId=${orderId}`,
+        get_user_orders: `${orderBaseUrl}orders/user`,
+        update: (orderId) => `${orderBaseUrl}orders?orderId=${orderId}`,
+        update_status: (orderId, orderStatus) =>
+            `${orderBaseUrl}orders/order-status?orderId=${orderId}&orderStatus=${orderStatus}`,
+        delete: (orderId) => `${orderBaseUrl}orders?orderId=${orderId}`,
+        get_all_orders: (page, size) => `${orderBaseUrl}orders?page=${page}&size=${size}`,
+        calculate_amount: (orderId) => `${orderBaseUrl}orders/amount/${orderId}`,
+        get_items: (orderId) => `${orderBaseUrl}orders/${orderId}/items`,
+        confirm: (orderId) => `${orderBaseUrl}orders/confirm/${orderId}`,
     },
     carts: {
         create: `${orderBaseUrl}carts`,

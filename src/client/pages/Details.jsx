@@ -18,7 +18,7 @@ const Details = () => {
   const [pages, setPages] = useState({ page: 0, size: 10 });
   const { listings, loading, hasMore } = useListings(pages.page, pages.size);
   const [_loading, setLoading] = useState(false);
-  const { addItemToCart } = useCart();
+  const { addItemToCart, cart } = useCart();
   const [ success, setSuccess] = useState("");
   const [item, setItem] = useState({
     name: '',
@@ -98,7 +98,7 @@ const Details = () => {
     <>
       <div className="h-[100vh] md:hidden">
         <div className="sticky top-0 pb-2 z-50 bg-white px-3">
-          <Header showBack showCart showMenuIcon showUser />
+          <Header showBack showCart showMenuIcon showUser cartCount={cart?.cartItems?.length}/>
           { success && 
             <p className='text-white bg-green-600 py-2 w-full font-bold text-center gap-3 px-4 truncate'><span className='pi pi-check-circle mr-3'/>{success}</p>
           }

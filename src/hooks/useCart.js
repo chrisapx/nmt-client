@@ -5,9 +5,9 @@ import { api_urls } from '../components/utils/ResourceUrls';
 const token = getUserToken();
 
 export function useCart() {
-  const [cart, setCart] = useState([]);
-  const [totalCount, setTotalCount] = useState();
-  const [totalCost, setTotalCost] = useState();
+  const [cart, setCart] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,17 +18,22 @@ export function useCart() {
     }
     setLoading(true);
     try {
-      const response = await fetch(api_urls.carts.get_open_cart, {
+      const response = await fetch(api_urls.carts.create, {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ cartItems: []})
       });
-      if (!response.ok) throw new Error(await response.text());
-      const data = await response.json();
-      console.log("Cart is: " + data);
-      setCart(data);
+      if (!response.ok) {
+        console.warn(await response.text());
+      } else {
+        const data = await response.json();
+        console.log(data)
+        setCart(data);
+      }
     } catch (err) {
-      console.error('Fetch error:', err);
       setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
@@ -37,7 +42,7 @@ export function useCart() {
 
   const addItemToCart = async (cartPayload) => {
     if (!isAuthenticated()) {
-      console.warn("User is not logged in. Skipping Cart addition.");
+      console.warn("Operation not allowed. User is not logged in");
       return;
     }
     try {
@@ -60,8 +65,8 @@ export function useCart() {
   };
 
   const removeItemFromCart = async (cartItemId) => {
-    if (!isAuthenticated()) {
-      console.warn("User is not logged in. Skipping remove from cart.");
+    if (!isAuthenticated() || !cart?.cartId) {
+      console.warn("Operation not allowed. User is not logged in or cart does not exist.");
       return;
     }
     try {
@@ -80,8 +85,8 @@ export function useCart() {
   };
 
   const updateCartItemQuantity = async (cartItemId, quantity) => {
-    if (!isAuthenticated()) {
-      console.warn("User is not logged in. Skipping update item quantity.");
+    if (!isAuthenticated() || !cart?.cartId) {
+      console.warn("Operation not allowed. User is not logged in or cart does not exist.");
       return;
     }
     try {
@@ -100,13 +105,13 @@ export function useCart() {
     }
   };
 
-  const clearCart = async (cartId) => {
-    if (!isAuthenticated()) {
-      console.warn("User is not logged in. Skipping clear cart.");
+  const clearCart = async () => {
+    if (!isAuthenticated() || !cart?.cartId) {
+      console.warn("Operation not allowed. User is not logged in or cart does not exist.");
       return;
     }
     try {
-      const response = await fetch(api_urls.carts.clear_cart(cartId), {
+      const response = await fetch(api_urls.carts.clear_cart(cart.cartId), {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -120,13 +125,13 @@ export function useCart() {
     }
   };
 
-  const getCartTotalCost = async (cartId) => {
-    if (!isAuthenticated()) {
-      console.warn("User is not logged in. Skipping get total cost.");
+  const getCartTotalCost = async () => {
+    if (!isAuthenticated() || !cart?.cartId) {
+      console.warn("Operation not allowed. User is not logged in or cart does not exist.");
       return;
     }
     try {
-      const response = await fetch(api_urls.carts.get_cart_total_cost(cartId), {
+      const response = await fetch(api_urls.carts.get_cart_total_cost(cart.cartId), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -141,9 +146,9 @@ export function useCart() {
     }
   };
 
-  const getTotalCartItemCount = async (cartId) => {
-    if (!isAuthenticated()) {
-      console.warn("User is not logged in. Skipping get count.");
+  const getTotalCartItemCount = async () => {
+    if (!isAuthenticated() || !cart?.cartId) {
+      console.warn("Operation not allowed. User is not logged in or cart does not exist.");
       return;
     }
     try {
@@ -157,7 +162,7 @@ export function useCart() {
       setTotalCount(count);
       return count;
     } catch (err) {
-      console.error('Get total cart itens error:', err);
+      console.error('Get total cart items error:', err);
       setError(err.message || 'Failed to retrieve total cart items');
     }
   };
@@ -167,8 +172,10 @@ export function useCart() {
   }, [fetchCart]);
 
   useEffect(() => {
-    getTotalCartItemCount();
-    getCartTotalCost(cart?.cartId);
+    if (cart?.cartId) {
+      getTotalCartItemCount();
+      getCartTotalCost();
+    }
   }, [cart]);
 
   return {
@@ -183,6 +190,6 @@ export function useCart() {
     updateCartItemQuantity,
     clearCart,
     getCartTotalCost,
-    getTotalCartItemCount
+    getTotalCartItemCount,
   };
 }
