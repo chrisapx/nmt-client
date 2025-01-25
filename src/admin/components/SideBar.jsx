@@ -23,7 +23,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className="w-60 bg-gray-100 flex rounded-2xl m-4 text-xs flex-col h-[88vh] shadow-lg justify-between mt-3 py-5 font-[600]">
+    <div className="w-60 bg-gray-100 flex rounded-2xl m-4 text-xs flex-col static h-[86vh] shadow-lg justify-between mt-3 py-5 font-[600]">
       <ConfirmDialog 
         className=""
         contentClassName="text-red-500"

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { api_urls } from '../components/utils/ResourceUrls';
 
-export function useListings(page = 0, size = 10, filters = {}, reload) {
+export function useListings(page = 0, size = 10, filters = {}, reload, admin) {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -9,12 +9,16 @@ export function useListings(page = 0, size = 10, filters = {}, reload) {
 
   const stableFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
-  const fetchItems = useCallback( async () => {
+  const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
-        const response = await fetch(api_urls.items.get_all(page, size));
-        if (!response.ok) throw new Error(await response.text());
-        const data = await response.json();
+      const response = await fetch(api_urls.items.get_all(page, size));
+      if (!response.ok) throw new Error(await response.text());
+      const data = await response.json();
+  
+      if(admin){
+        setListings(data);
+      } else {
         setListings((prev) => {
           const uniqueItems = [...prev, ...data].filter(
             (item, index, array) =>
@@ -22,16 +26,18 @@ export function useListings(page = 0, size = 10, filters = {}, reload) {
           );
           return uniqueItems;
         });
-
-        if (data.length < size) setHasMore(false);
-        console.log(data);
-      } catch (err) {
-        console.error('Fetch error:', err);
-        setError(err.message || 'An error occurred');
-      } finally {
-        setLoading(false);
       }
-  }, []);
+  
+      setHasMore(data.length === size);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setError(err.message || 'An error occurred');
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, size]);
+  
 
   const fetchItem = async (itemId) => {
       setLoading(true);
