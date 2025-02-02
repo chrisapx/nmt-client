@@ -55,6 +55,7 @@ const Search = () => {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
+                    console.log("Scroll more triggered")
                     setPages((prev) => ({ ...prev, page: prev.page + 1 }));
                 }
             },

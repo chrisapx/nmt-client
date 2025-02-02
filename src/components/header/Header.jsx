@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FaAngleLeft } from "react-icons/fa6";
 import { NavLink, useNavigate } from "react-router-dom";
 import { CgMenu } from "react-icons/cg";
 import { ShoppingCartOutlined } from "@mui/icons-material";
@@ -47,16 +46,16 @@ const Header = ({ showBack, showMenuIcon, showUser, showCart, cartCount }) => {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center mt-4 bg-white">
-        <div className="flex items-center">
-          {showBack && (
-            <div className="mr-2 cursor-pointer">
-              <FaAngleLeft size={22} className="text-gray-500" onClick={() => navigate(-1)} />
+        <div className="flex gap-3 items-center">
+          {showBack ? (
+            <div className="cursor-pointer">
+              <i className="pi pi-angle-left text-xl text-gray-500" onClick={() => navigate(-1)} />
             </div>
-          )}
+          ): null}
 
-          { showMenuIcon && <CgMenu className='text-2xl text-gray-500 mr-2' onClick={() => setToggle(!toggle)}/> }
+          { showMenuIcon && <i className='pi pi-bars text-lg bg-gray-100 rounded-full px-2 py-1 text-gray-500' onClick={() => setToggle(!toggle)}/> }
           <div
-            className="font-semibold text-2xl text-red-600 cursor-pointer"
+            className="font-semibold text-xl text-red-600 cursor-pointer"
             onClick={() => navigate("/")}
           >
             Nalmart

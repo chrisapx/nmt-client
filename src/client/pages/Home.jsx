@@ -10,7 +10,7 @@ const Home = () => {
   const [deliveryAddress, setDeliveryAddress] = useState();
   const [pages, setPages] = useState({ page: 0, size: 10 });
   const { listings, loading, hasMore } = useListings(pages.page, pages.size);
-  const observerRef = useRef();
+  const _observerRef = useRef();
 
   useEffect(() => {
     document.title = "Explore nalmart's collection of products";
@@ -21,17 +21,19 @@ const Home = () => {
   
     const observer = new IntersectionObserver(
       (entries) => {
+        console.log(entries);
         if (entries[0].isIntersecting && hasMore) {
+          console.log("Scroll more triggered")
           setPages((prev) => ({ ...prev, page: prev.page + 1 }));
         }
       },
-      { threshold: 1.0 }
+      { threshold: 0.5 }
     );
   
-    if (observerRef.current) observer.observe(observerRef.current);
+    if (_observerRef.current) observer.observe(_observerRef.current);
   
     return () => {
-      if (observerRef.current) observer.unobserve(observerRef.current);
+      if (_observerRef.current) observer.unobserve(_observerRef.current);
       observer.disconnect();
     };
   }, [loading, hasMore]);
@@ -62,7 +64,7 @@ const Home = () => {
               <LoaderIcon />
             </div>
           )}
-          {!loading && hasMore && <div ref={observerRef} className="h-10"></div>}
+          {!loading && hasMore && <div ref={_observerRef} className="h-10"></div>}
         </section>
       </div>
 
