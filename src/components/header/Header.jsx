@@ -64,13 +64,13 @@ const Header = ({ showBack, showMenuIcon, showUser, showCart, cartCount }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {isAuthenticated() ? (
+          { isAuthenticated() ? (
             <div className="font-bold text-gray-700 bg-gray-200 p-2 rounded-full" title={`Already logged in as ${user?.fullName || "--"}`}>
               {getInitials(user?.fullName)}
             </div>
           ) : (
             <button onClick={() => dispatchAuth(true)}>
-              <IconWithBadge iconClass="pi pi-user text-lg cursor-pointer" ariaLabel="User Profile" />
+              <i className="pi pi-user text-lg cursor-pointer" aria-label="User Profile" />
             </button>
           )}
           { isAuthenticated() && showCart && <div className="relative cursor-pointer" onClick={handleCartClick}>

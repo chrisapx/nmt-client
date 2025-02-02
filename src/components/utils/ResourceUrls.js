@@ -17,6 +17,7 @@ export const api_urls = {
             get_all_top_level: `${inventoryBaseUrl}categories/top-level`,
             get_subCategories: (parentId) => `${inventoryBaseUrl}categories/sub-categories?parentId=${parentId}`,
         },
+        search: (searchInput, page, size) => `${inventoryBaseUrl}products/search?input=${searchInput}&page=${page}&size=${size}`,
     },
     users: {
         get_all: `${userBaseUrl}users`,

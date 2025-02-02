@@ -56,7 +56,7 @@ const OrderDetails = () => {
 
           <div className="bg-white px-3 py-2 flex flex-col gap-3">
             <p className="font-[400] text-white bg-green-500 px-4 rounded w-fit">
-              PENDING
+              {order?.orderStatus}
             </p>
             <p className="text-gray-700">Items ({order?.cart.cartItems?.length || '0'})</p>
           </div>

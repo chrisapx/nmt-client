@@ -7,7 +7,7 @@ import DesktopMessage from './client/components/DesktopMessage';
 import LoadingSpinner from './global/LoadingSpinner';
 import ClientRoutes from './layout/ClientRoutes';
 import AdminRoutes from './layout/AdminRoutes';
-import AuthModel from './components/model_content/AuthModel';
+import AuthModel from './components/auth_models/AuthModel';
 
 function App() {
   const hostname = window.location.hostname;

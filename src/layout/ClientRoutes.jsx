@@ -8,12 +8,13 @@ const OrderSuccess = lazy(() => import('../client/pages/OrderSuccess'));
 const Home = lazy(() => import('../client/pages/Home'));
 const Cart = lazy(() => import('../client/pages/Cart'));
 const Checkout = lazy(() => import('../client/pages/Checkout'));
+const Search = lazy(() => import('../client/pages/Search'))
 
 const ClientRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      {/* <Route path="/search" element={<SearchPage />} /> */}
+      <Route path="/search" element={<Search />} />
       {/* <Route path="/_sr/:input" element={<SearchPage />} /> */}
       <Route path="/details/:itemID?" element={<Details />} />
       <Route path="/cart" element={<Cart />} />

@@ -95,6 +95,40 @@ export default function AuthModel() {
         }
     }
 
+    const verify = async (url, data) => {
+        const logins = { username: data.email, password: data.password };
+        console.log(logins);
+        try{
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(logins)
+            });
+
+            if(response.ok){
+                const data = await response.json();
+                console.log(data);
+                setAuthUser(data.user);
+                setUserToken(data.token);
+                setSuccess("Success, redirecting you ...");
+                setTimeout(() => {
+                    dispatchAuth(false);
+                    handleRefresh();
+                    window.location.reload();
+                }, 300);
+            } else {
+                setError(await response.text());
+            }
+            
+        } catch (error) {
+            setError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const register = async (url, data) => {
         try{
             const response = await fetch(url, {
@@ -192,7 +226,7 @@ export default function AuthModel() {
 
                         <p className="text-center cursor-pointer text-sm font-[600] underline text-gray-300">Forgom password?</p>
 
-                        <p align="center" className="text-gray-200 m-0 text-sm">----------- Or Continue with -------------</p>
+                        <p align="center" className="text-grInay-200 m-0 text-sm">----------- Or Continue with -------------</p>
 
                         <div className="text-center py-6">
                             <div className="w-8 h-8 flex items-center cursor-pointer justify-center mx-auto my-auto">

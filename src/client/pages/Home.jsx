@@ -18,7 +18,7 @@ const Home = () => {
 
   useEffect(() => {
     if (loading) return;
-
+  
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore) {
@@ -27,11 +27,15 @@ const Home = () => {
       },
       { threshold: 1.0 }
     );
-
+  
     if (observerRef.current) observer.observe(observerRef.current);
-
-    return () => observer.disconnect();
+  
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+      observer.disconnect();
+    };
   }, [loading, hasMore]);
+  
 
   return (
     <>

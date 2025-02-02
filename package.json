@@ -38,7 +38,8 @@
     "slick-carousel": "^1.8.1",
     "swiper": "^8.2.2",
     "uuid": "^9.0.1",
-    "vite-plugin-require": "^1.1.14"
+    "vite-plugin-require": "^1.1.14",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
