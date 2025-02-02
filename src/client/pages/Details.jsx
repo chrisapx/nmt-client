@@ -208,7 +208,7 @@ const Details = () => {
           {!loading && hasMore && <div ref={observerRef} className="h-10"></div>}
         </section>
 
-        <div className="sticky bottom-0 bg-white w-full shadow-2xl py-4 px-3">
+        <div className="sticky bottom-0 bg-white w-full shadow-2xl py-4 px-3 pb-16">
           { isAuthenticated() ? 
             <div
               className="select-none text-center bg-red-500 py-3 rounded-full text-white font-bold cursor-pointer"
