@@ -7,7 +7,7 @@ import DesktopMessage from './client/components/DesktopMessage';
 import LoadingSpinner from './global/LoadingSpinner';
 import ClientRoutes from './layout/ClientRoutes';
 import AdminRoutes from './layout/AdminRoutes';
-import AuthModel from './components/auth_models/AuthModel';
+import AuthModel from './components/auth_models_old/AuthModel';
 import AuthDrawer from './components/authentication/AuthDrawer';
 import ToastContainer from './global/Toast';
 

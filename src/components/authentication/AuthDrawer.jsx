@@ -8,6 +8,7 @@ import VerificationStatus from "./auth_forms/VerificationStatus";
 import { SendPasswordResetEmail } from "./auth_forms/SendResetLink";
 import { ResetPassword } from "./auth_forms/ResetPassword";
 import { VerifyResetCode } from "./auth_forms/VerifyResetCode";
+import { EditProfile } from "./auth_forms/EditProfile";
 
 export default function AuthDrawer() {
   const { dialogOpen, operation, handleClose } = useAuthDialog();
@@ -38,6 +39,7 @@ export default function AuthDrawer() {
               {operation === dialog_operations.reset_email && <SendPasswordResetEmail />}
               {operation === dialog_operations.reset_password && <ResetPassword />}
               {operation === dialog_operations.verification_status && <VerificationStatus/>}
+              {operation === dialog_operations.edit_profile && <EditProfile/>}
 
             </section>
 

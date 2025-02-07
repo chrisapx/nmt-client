@@ -31,23 +31,23 @@ const SidebarComponent = ({ visible, onHide }) => {
         className="w-[70vw]"
         content={({}) => (
             <div className="h-[100vh] flex flex-col justify-between">
-                <header className="flex justify-between items-center mx-3 my-6 px-3 py-6 bg-black bg-opacity-70 rounded-lg">
+                <header className="flex justify-between items-center mx-3 my-6 px-3 py-6 bg-white bg-opacity-70 rounded-lg">
                     <div className="flex gap-3 items-center">
-                        <p className="font-extrabold text-xl text-white">Nalmart</p>
+                        <p className="font-extrabold text-xl text-red-500">Nalmart</p>
                     </div>
-                    <i className="pi pi-window-minimize text-gray-300" onClick={onHide}/>
+                    <i className="pi pi-window-minimize text-gray-500" onClick={onHide}/>
                 </header>
 
                 <section className="flex-1 mx-3">
                     <NavItem to="/orders" icon="pi-th-large" offLabel label="My Orders"/>
-                    <NavItem to="/account" icon="pi-cog" newLabel label="Settings" />
+                    <NavItem to="/settings" icon="pi-cog" newLabel label="Settings" />
                     <NavItem to="/sell" icon="pi-briefcase" offLabel label="Partner / Sell" />
                     <NavItem to="/ncredit" icon="pi-cog" offLabel label="Nalmart Credit" />
                 </section>
 
                 {/* Profile card */}
-                <section className="bg-black opacity-80 rounded-xl m-3">
-                    <div className="flex gap-4 p-[2%] bg-white m-2 rounded-lg relative">
+                <section className="bg-white opacity-80 rounded-xl m-3 border">
+                    <div className="flex gap-4 p-[2%] bg-white m-2 rounded-lg relative border">
                         <div className="relative">
                             <Avatar />
                             <p className="w-3 h-3 bg-green-600 absolute rounded-full border-1 -right-1 top-6"></p>
@@ -59,7 +59,7 @@ const SidebarComponent = ({ visible, onHide }) => {
                         { user?.verified && <Verified fontSize="small" className="text-md text-green-700 rounded-xl justify-right"/>}
 
                     </div>
-                    <p className="hover:bg-red-500 select-none font-bold text-white text-center border border-gray-500 p-[3%] m-2 rounded-lg"
+                    <p className="bg-red-500 select-none font-bold text-white text-center border border-gray-500 p-[3%] m-2 rounded-lg"
                         onClick={showLogoutConfirmation}
                     >
                         Logout

@@ -2,7 +2,7 @@ import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import NotFoundPage from '../client/pages/NotFoundPage';
 
-const Profile = lazy(() => import('../client/pages/Profile'));
+const Settings = lazy(() => import('../client/pages/Settings'));
 const Orders = lazy(() => import('../client/pages/Orders'));
 const Details = lazy(() => import('../client/pages/Details'));
 const OrderStatus = lazy(() => import('../client/pages/OrderStatus'));
@@ -19,7 +19,7 @@ const ClientRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/search" element={<Search />} />
       {/* <Route path="/orders" element={<Orders />} /> */}
-      {/* <Route path="/account" element={<Profile />} /> */}
+      <Route path="/settings" element={<Settings />} />
       <Route path="/details/:itemID?" element={<Details />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout/:totalPrice?" element={<Checkout />} />

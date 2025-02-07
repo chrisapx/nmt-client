@@ -23,6 +23,7 @@ export const api_urls = {
         get_all: `${userBaseUrl}users`,
         login: `${userBaseUrl}users/login`,
         register: `${userBaseUrl}users`,
+        edit_profile: (email) => `${userBaseUrl}users?emailOrWorkPhone=${email}`,
         verify: (email, otp) => `${userBaseUrl}users/verify?emailOrWorkPhone=${email}&otp=${otp}`,
         reset_password: (email, newPassword) => `${userBaseUrl}users/password?emailOrWorkPhone=${email}&newPassword=${newPassword}`,
         resend_token: (email, type) => `${userBaseUrl}users/otp?emailOrWorkPhone=${email}&type=${type}`,

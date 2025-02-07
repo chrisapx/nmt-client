@@ -31,7 +31,7 @@ const Header = ({ showBack, showMenuIcon, showCart, cartCount }) => {
           { showMenuIcon && (
             <div className="relative">
               <i className="pi pi-bars text-lg bg-gray-100 rounded-full px-2 py-1 text-gray-500 cursor-pointer" onClick={() => { isAuthenticated() ? setToggle(true) : showToast("Login to access menu")}} />
-              <p className={`${ isAuthenticated() && "hidden"} pi pi-lock absolute -right-1 bg-gray-200 rounded-full bottom-0 text-green-600 text-sm`}/>
+              <p className={`${ isAuthenticated() && "hidden"} pi pi-lock absolute -right-1 rounded-full bottom-0 text-green-600 text-sm`}/>
             </div>
           )}
 

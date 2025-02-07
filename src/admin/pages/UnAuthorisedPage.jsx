@@ -10,7 +10,7 @@ const UnauthorisedPage = () => {
   const { openDialog } = useAuthDialog();
 
   const handleLoginRedirect = () => {
-    openDialog(dialog_operations.admin_login);
+    openDialog(dialog_operations.login);
   };
 
   useEffect(() => {
