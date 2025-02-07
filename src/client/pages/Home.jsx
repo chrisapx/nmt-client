@@ -5,11 +5,13 @@ import Header from '../../components/header/Header';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import LoaderIcon from '../../global/LoaderIcon';
+import { useCart } from '../../hooks/useCart';
 
 const Home = () => {
   const [deliveryAddress, setDeliveryAddress] = useState();
   const [pages, setPages] = useState({ page: 0, size: 10 });
   const { listings, loading, hasMore } = useListings(pages.page, pages.size);
+  const { cart } = useCart();
   const _observerRef = useRef();
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const Home = () => {
     <>
       <div className="md:hidden px-3 h-[100vh] overflow-auto">
         <div className="sticky top-0 bg-white z-50 pb-[1px]">
-          <Header showMenuIcon showUser showCart />
+          <Header showMenuIcon showUser showCart cartCount={cart?.cartItems?.length} />
           <section className="my-3">
             <SearchBar />
           </section>

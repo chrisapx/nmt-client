@@ -4,7 +4,7 @@ import { api_urls } from '../components/utils/ResourceUrls';
 
 const token = getUserToken();
 
-export function useCart() {
+export function useCart(reload) {
   const [cart, setCart] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -38,7 +38,7 @@ export function useCart() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [reload]);
 
   const addItemToCart = async (cartPayload) => {
     if (!isAuthenticated()) {
