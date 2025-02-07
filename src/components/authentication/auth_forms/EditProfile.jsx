@@ -102,11 +102,7 @@ export function EditProfile() {
   return (
     <form onSubmit={handleSubmit(_handleSubmit)} className="w-full py-6">
       <div className="text-center">
-        <p className="font-[600] text-xl">Welcome</p>
-        <p className="flex gap-2 justify-center">
-          <span className="text-gray-500 text-xs">Already have an account? </span>
-          <p onClick={() => openDialog(dialog_operations.login) } className="font-medium text-xs text-blue-400 hover:text-blue-700 cursor-pointer">Login</p>
-        </p>
+        <p className="font-[600] text-xl">Edit your profile</p>
       </div>
 
       <div className="grid grid-cols-2 gap-6 my-4">
@@ -147,22 +143,6 @@ export function EditProfile() {
 
             <div className="col-span-2">
               <Button onClick={handleNextStep} label="Next" className="mt-4 w-full bg-red-500 flex text-white rounded-lg py-2 font-semibold"/>      
-            </div>
-            
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="border h-1 border-b-0 border-l-0 border-r-0 grow"></span>
-                <span className="text-lg my-1 font-normal text-[#80828D]">
-                  or
-                </span>
-                <span className="border h-1 border-b-0 border-l-0 border-r-0 grow"></span>
-              </div>
-              <button className="flex items-center border border-[#CDCED7] rounded-[8px] py-2 w-full">
-                <div className="w-6 h-6 object-cover mx-6">
-                  <img src="/icons/google.png" alt="Google" />
-                </div>
-                <p className="font-medium flex-1 text-center">Continue with Google</p>
-              </button>
             </div>
           </div>
         </>
