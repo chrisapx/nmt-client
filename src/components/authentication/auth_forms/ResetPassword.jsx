@@ -2,30 +2,35 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import CardLoadingSpinner from "../../global/CardLoadingSpinner";
-import { useAuthDialog } from "../../../utils/hooks/useAuthDialog";
-import { dialog_operations } from "../../../utils/constansts/DialogOperations";
 import { useSearchParams } from "react-router-dom";
+import LoaderIcon from "../../../global/LoaderIcon";
+import { dialog_operations } from "../../utils/constansts/DialogOperations";
+import { useAuthDialog } from "../../../hooks/useAuthDialog";
+import { api_urls } from "../../utils/ResourceUrls";
+import { showToast } from "../../../global/Toast";
 
-const resetPasswordSchema = z.object({
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long." }),
-  newpassword: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long." }),
-});
+const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long." }),
+    newpassword: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long." }),
+  })
+  .refine((data) => data.password === data.newpassword, {
+    message: "Enter same password as first one please.",
+    path: ["newpassword"],
+  });
+
 
 export function ResetPassword() {
-  const { openDialog, handleClose } = useAuthDialog();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { openDialog } = useAuthDialog();
+  const [searchParams] = useSearchParams();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -42,16 +47,29 @@ export function ResetPassword() {
     },
   });
 
-  const _handleSubmit = (data) => {
+  const _handleSubmit = async (data) => {
+    const _email = searchParams.get("u_email");
     if(!trigger()){
       return;
     }
     setIsLoading(true);
-    setTimeout(() => {
+    try{
+      const response = await fetch(api_urls.users.reset_password(_email, data.password), {
+          method: 'PATCH',
+      });
+      if(response.ok){
+        showToast( await response.text(), "success");
+        setTimeout(() => {
+          openDialog(dialog_operations.login, [{key: "u_email", value: _email}]);
+        }, 1500)
+      } else {
+        showToast( await response.text(), "error")
+      }
+    } catch( error ) {
+      showToast(error.message, "error")
+    } finally {
       setIsLoading(false);
-      openDialog(dialog_operations.login);
-    }, 3000)
-    console.log("Form Data:", data);
+    }
   };
 
   const handleBackToLogin = () => {
@@ -79,6 +97,9 @@ export function ResetPassword() {
               <div className="relative">
                 <InputText
                   type={passwordVisible ? "text" : "password"}
+                  inputMode="text"
+                  autoComplete="new-password"
+                  spellCheck={false}
                   placeholder="******"
                   {...register("password")}
                   className="border-gray-200 shadow-none rounded-lg w-full border-2 px-3 py-2 placeholder:text-md focus-within:border-[#6CAFE6] hover:border-[#6CAFE6]"
@@ -87,7 +108,7 @@ export function ResetPassword() {
                   className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
                   onClick={togglePasswordVisibility}
                 >
-                  {passwordVisible ? <EyeIcon /> : <EyeOffIcon />}
+                  { passwordVisible ? <i className="pi pi-eye" /> : <i className="pi pi-eye-slash" />}
                 </span>
               </div>
               {errors.password && (
@@ -109,7 +130,7 @@ export function ResetPassword() {
                   className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
                   onClick={toggleNewPasswordVisibility}
                 >
-                  {newPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
+                  { newPasswordVisible ? <i className="pi pi-eye" /> : <i className="pi pi-eye-slash" />}
                 </span>
               </div>
               {errors.newpassword && (
@@ -122,7 +143,7 @@ export function ResetPassword() {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full bg-[#2F91D7] flex text-white rounded-lg py-2 font-semibold`}
-                label={ isLoading ? <CardLoadingSpinner color={'black'}/> : "Set Password"}
+                label={ isLoading ? <LoaderIcon color={'black'}/> : "Set Password"}
               />
             <p
               className="text-sm text-center text-[#1D84C9] cursor-pointer"

@@ -8,6 +8,8 @@ import LoadingSpinner from './global/LoadingSpinner';
 import ClientRoutes from './layout/ClientRoutes';
 import AdminRoutes from './layout/AdminRoutes';
 import AuthModel from './components/auth_models/AuthModel';
+import AuthDrawer from './components/authentication/AuthDrawer';
+import ToastContainer from './global/Toast';
 
 function App() {
   const hostname = window.location.hostname;
@@ -18,6 +20,8 @@ function App() {
       <DesktopMessage />
       <LoadingProvider>
         <AuthModel />
+        <AuthDrawer/>
+        <ToastContainer/>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="*" element={ isAdminSubdomain ? <AdminRoutes/> : <ClientRoutes />} />

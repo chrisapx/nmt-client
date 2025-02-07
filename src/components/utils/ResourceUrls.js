@@ -23,6 +23,9 @@ export const api_urls = {
         get_all: `${userBaseUrl}users`,
         login: `${userBaseUrl}users/login`,
         register: `${userBaseUrl}users`,
+        verify: (email, otp) => `${userBaseUrl}users/verify?emailOrWorkPhone=${email}&otp=${otp}`,
+        reset_password: (email, newPassword) => `${userBaseUrl}users/password?emailOrWorkPhone=${email}&newPassword=${newPassword}`,
+        resend_token: (email, type) => `${userBaseUrl}users/otp?emailOrWorkPhone=${email}&type=${type}`,
         check_account: (email) => `${userBaseUrl}users/account_status?email=${email}`,
     },
     orders: {

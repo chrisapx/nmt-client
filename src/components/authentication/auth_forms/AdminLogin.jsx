@@ -4,13 +4,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import LoaderIcon from "../../../global/LoaderIcon";
 import { useAuthDialog } from "../../../hooks/useAuthDialog";
 import { dialog_operations } from "../../utils/constansts/DialogOperations";
 import { showToast } from "../../../global/Toast";
-import { api_urls } from "../../utils/ResourceUrls";
-import { setAuthUser, setUserToken } from "../../utils/AuthCookiesManager";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -19,74 +17,48 @@ const loginSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters long." }),
 });
 
-export function Login() {
-  const navigate = useNavigate();
+export function AdminLogin() {
   const { openDialog, handleClose } = useAuthDialog();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    trigger,
-    reset
+    trigger
   } = useForm({
     resolver: zodResolver( loginSchema ),
     defaultValues: {
       email: searchParams.get('u_email') || "",
-      password: ""
+      password: "",
+      newpassword: "",
     },
   });
 
-  const _handleSubmit = async (data) => {
-    setIsLoading(true);
-  
-    const isValid = await trigger();
-    if (!isValid) return;
-  
-    try {
-      const response = await fetch(api_urls.users.login, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: data.email, password: data.password }),
-      });
-  
-      if (!response.ok) {
-        const resText = await response.text();
-        if (resText === "User account unverified") {
-          showToast(`${resText}. Redirecting...`, "warn");
-          setTimeout(() => {
-            openDialog(dialog_operations.verify, [{ key: "u_email", value: data.email }]);
-          }, 2000);
-        } else {
-          showToast(resText, "error");
-        }
-        return;
-      }
-  
-      const responseData = await response.json();
-      setAuthUser(responseData.user);
-      setUserToken(responseData.token);
-      showToast("Success, redirecting you...", "success");
-  
-      reset();
-      handleClose();
-      window.location.reload();
-    } catch (error) {
-      showToast(error.message, "error");
-    } finally {
-      setIsLoading(false);
+  const _handleSubmit = (data) => {
+    if(!trigger()){
+      return;
     }
+    showToast("Log in test passed", "error")
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      handleClose();
+    }, 3000)
+    console.log("Form Data:", data);
   };
-  
 
   const handleForgotPassword = () => {
     openDialog(dialog_operations.reset_email);
   };
 
   const handleContinueWithGoogle = () => {
+    openDialog(dialog_operations.verification_status)
     confirm("Continuing with google");
     console.log("Logged in with googlr");
   };
@@ -158,7 +130,7 @@ export function Login() {
                 </span>
                 <span className="border h-1 border-b-0 border-l-0 border-r-0 grow"></span>
               </div>
-              <button disabled onClick={handleContinueWithGoogle} className="flex items-center border border-[#CDCED7] rounded-[8px] py-2 w-full">
+              <button onClick={handleContinueWithGoogle} className="flex items-center border border-[#CDCED7] rounded-[8px] py-2 w-full">
                 <div className="w-6 h-6 object-cover mx-6">
                   <img src="/icons/google.png" alt="Google" />
                 </div>

@@ -1,6 +1,9 @@
 import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import NotFoundPage from '../client/pages/NotFoundPage';
 
+const Profile = lazy(() => import('../client/pages/Profile'));
+const Orders = lazy(() => import('../client/pages/Orders'));
 const Details = lazy(() => import('../client/pages/Details'));
 const OrderStatus = lazy(() => import('../client/pages/OrderStatus'));
 const OrderDetails = lazy(() => import('../client/pages/OrderDetails'));
@@ -15,16 +18,16 @@ const ClientRoutes = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/search" element={<Search />} />
-      {/* <Route path="/_sr/:input" element={<SearchPage />} /> */}
+      {/* <Route path="/orders" element={<Orders />} /> */}
+      {/* <Route path="/account" element={<Profile />} /> */}
       <Route path="/details/:itemID?" element={<Details />} />
       <Route path="/cart" element={<Cart />} />
-      {/* <Route path="/account" element={<Account />} /> */}
       <Route path="/checkout/:totalPrice?" element={<Checkout />} />
       {/* <Route path="/payment/:pstatus" element={<Payment />} /> */}
       <Route path="/order-success/:orderId?" element={<OrderSuccess />} />
       <Route path="/order-status/:orderId?" element={<OrderStatus />} />
       <Route path="/order-details/:orderId?" element={<OrderDetails />} />
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

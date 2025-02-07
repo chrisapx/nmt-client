@@ -2,13 +2,15 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { isAuthenticated } from "../../components/utils/AuthCookiesManager";
+import { useAuthDialog } from "../../hooks/useAuthDialog";
+import { dialog_operations } from "../../components/utils/constansts/DialogOperations";
 
 const UnauthorisedPage = () => {
   const navigate = useNavigate();
-  const { dispatchAuth } = useAuth();
+  const { openDialog } = useAuthDialog();
 
   const handleLoginRedirect = () => {
-    dispatchAuth(true);
+    openDialog(dialog_operations.admin_login);
   };
 
   useEffect(() => {

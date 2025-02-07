@@ -57,7 +57,7 @@ const Details = () => {
     const fetchItem = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}products/${itemID}`);
+        const response = await fetch(`${import.meta.env.VITE_INVENTORY_API_URL}products/${itemID}`);
         const json = await response.json();
         setItem(json);
         console.log(json);

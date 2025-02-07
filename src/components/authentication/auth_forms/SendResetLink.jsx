@@ -4,10 +4,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import CardLoadingSpinner from "../../global/CardLoadingSpinner";
-import { useAuthDialog } from "../../../utils/hooks/useAuthDialog";
-import { dialog_operations } from "../../../utils/constansts/DialogOperations";
 import { useSearchParams } from "react-router-dom";
+import LoaderIcon from "../../../global/LoaderIcon";
+import { useAuthDialog } from "../../../hooks/useAuthDialog";
+import { dialog_operations } from "../../utils/constansts/DialogOperations";
+import { showToast } from "../../../global/Toast";
+import { api_urls } from "../../utils/ResourceUrls";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -33,16 +35,29 @@ export function SendPasswordResetEmail() {
     },
   });
 
-  const _handleSubmit = (data) => {
+  const _handleSubmit = async (data) => {
     if(!trigger()){
       return;
     }
     setIsLoading(true);
-    setTimeout(() => {
+
+    try{
+      const response = await fetch(api_urls.users.resend_token(data.email, "r"), {
+          method: 'POST',
+      });
+      if(response.ok){
+        showToast( "Code sent to your email address " + data.email, "success");
+        setTimeout(() => {
+          openDialog(dialog_operations.verify_reset_code, [{key: "u_email", value: data.email}]);
+        }, 1500)
+      } else {
+        showToast( await response.text(), "error")
+      }
+    } catch( error ) {
+      showToast(error.message, "error")
+    } finally {
       setIsLoading(false);
-      openDialog(dialog_operations.reset_password);
-    }, 3000)
-    console.log("Form Data:", data);
+    }
   };
 
   const handleBackToLogin = () => {
@@ -53,10 +68,10 @@ export function SendPasswordResetEmail() {
     <form onSubmit={handleSubmit(_handleSubmit)} className="w-full py-8">
         <>
           <h2 className="text-left font-bold text-xl">
-            Reset your password
+            Get password reset code
           </h2>
           <p className="text-xs text-[#62636C]">
-            We’ll email you a link to reset your password.
+            We’ll email you a code to reset your password.
           </p>
           <div className="my-6">
             <label className="block mb-1 font-medium text-sm">Email</label>
@@ -73,8 +88,8 @@ export function SendPasswordResetEmail() {
           <Button
               type="submit"
               disabled={isLoading}
-              className={`w-full bg-[#2F91D7] flex text-white rounded-lg py-2 font-semibold`}
-              label={ isLoading ? <CardLoadingSpinner color={'black'}/> : "Send Link"}
+              className={`w-full bg-red-500 flex text-white rounded-lg py-2 font-semibold`}
+              label={ isLoading ? <LoaderIcon color={'black'}/> : "Generate Code"}
             />
           <p
             className="text-sm text-center mt-3 text-[#1D84C9] cursor-pointer"
