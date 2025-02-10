@@ -14,7 +14,7 @@ export const api_urls = {
         download_file: (fileName) => `${inventoryBaseUrl}files/${fileName}`,
         categories: {
             upload: `${inventoryBaseUrl}categories/category`,
-            get_all_top_level: `${inventoryBaseUrl}categories/top-level`,
+            get_all: `${inventoryBaseUrl}categories`,
             get_subCategories: (parentId) => `${inventoryBaseUrl}categories/sub-categories?parentId=${parentId}`,
         },
         search: (searchInput, page, size) => `${inventoryBaseUrl}products/search?input=${searchInput}&page=${page}&size=${size}`,

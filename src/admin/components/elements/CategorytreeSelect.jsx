@@ -1,73 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { TreeSelect } from "primereact/treeselect";
 import { api_urls } from "../../../components/utils/ResourceUrls";
+import { createItemsTree } from "../../../components/utils/TreeBuilder";
 
 const CategoryTreeSelect = ({ value, onChange }) => {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(value);
-  const [expandedNodes, setExpandedNodes] = useState([]);
+  const [nodes, setNodes] = useState(null);
+  const [selectedNodeKey, setSelectedNodeKey] = useState(value);
 
   useEffect(() => {
-    setSelectedCategory(value);
-  }, [value]);
-
-  useEffect(() => {
-    const fetchParentCategories = async () => {
+    const fetchCategories = async () => {
       try {
-        const response = await fetch(api_urls.items.categories.get_all_top_level);
-        const formattedCategories = (await response.json()).map((parent) => ({
-          key: parent.categoryId,
-          label: parent.name,
-          leaf: false,
+        const response = await fetch(api_urls.items.categories.get_all);
+        const rawCategories = await response.json();
+
+        const mappedCategories = rawCategories.map((cat) => ({
+          ...cat,
+          label: cat.name,
+          key: cat.categoryId,
+          data: cat.categoryId
         }));
-        setCategories(formattedCategories);
+
+        const nestedCategories = createItemsTree(mappedCategories);
+        console.log(nestedCategories);
+        setNodes(nestedCategories);
       } catch (error) {
         console.error("Error fetching parent categories:", error);
       }
     };
 
-    fetchParentCategories();
+    fetchCategories();
   }, []);
 
-  const loadSubcategories = async (node) => {
-    try {
-      const response = await fetch(api_urls.items.categories.get_subCategories(node.key));
-      const subcategories = (await response.json()).map((sub) => ({
-        key: sub.categoryId,
-        label: sub.name,
-        leaf: true,
-      }));
-
-      setCategories((prevCategories) =>
-        prevCategories.map((cat) => {
-          if (cat.key === node.key) {
-            return { ...cat, children: subcategories };
-          }
-          return cat;
-        })
-      );
-    } catch (error) {
-      console.error("Error fetching subcategories:", error);
-    }
-  };
+  useEffect(() => {
+    setSelectedNodeKey(value);
+  }, [value]);
 
   const handleSelectionChange = (e) => {
-    setSelectedCategory(e.value);
+    setSelectedNodeKey(e.value);
     onChange(e.value);
   };
 
   return (
     <div className="card">
       <TreeSelect
-        value={selectedCategory}
-        options={categories}
-        filter
+        value={selectedNodeKey}
         onChange={handleSelectionChange}
-        onNodeExpand={(e) => loadSubcategories(e.node)}
-        expandedKeys={expandedNodes}
-        onToggle={(e) => setExpandedNodes(e.value)}
-        placeholder="Select a Category"
+        options={nodes}
         className="w-full border"
+        placeholder="Select a Category"
       />
     </div>
   );
