@@ -12,7 +12,7 @@ export function useCategoriess(page = 0, size = 10, parentId, reload) {
       setLoading(true);
       try {
         const url = parentId ? 
-            api_urls.items.categories.get_subCategories(parentId) : api_urls.items.categories.get_all_top_level
+            api_urls.items.categories.get_subCategories(parentId) : api_urls.items.categories.get_all
         const response = await fetch(url);
         if (!response.ok) throw new Error(await response.text());
         const data = await response.json();

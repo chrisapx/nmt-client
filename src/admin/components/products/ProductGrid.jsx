@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import LoaderIcon from "../../../global/LoaderIcon";
 
 const SlickTable = ({ products = [], isLoading = false }) => {
+  const [hovered, setHovered] = useState("");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -64,8 +65,9 @@ const SlickTable = ({ products = [], isLoading = false }) => {
               </thead>
               <tbody className="divide-y divide-gray-200 text-sm">
                 {products.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-50">
+                  <tr key={row.id} className="hover:bg-gray-50 cursor-pointer" onMouseEnter={() => setHovered(row.itemId)} onMouseLeave={() => setHovered("")}>
                     <td title="Select" className="px-4 py-2 text-gray-700 max-w-[2rem]">
+                    { hovered === row.itemId && <button className="absolute">Edit</button>}
                       <input
                         type="checkbox"
                         checked={selectedItems.includes(row.id)}

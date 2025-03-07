@@ -28,44 +28,46 @@ const CategoriesGrid = ({ categories = [], isLoading = false }) => {
         </div>
       ) : (
         <>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50 text-sm font-bold">
-              <tr>
-                <th className="px-4 py-2 text-left font-medium text-gray-600 max-w-[2rem]">
-                  <input
-                    type="checkbox"
-                    checked={selectAll}
-                    onChange={() => setSelectAll(!selectAll)}
-                  />
-                </th>
-                <th className="px-4 py-2 text-left font-medium text-gray-600 truncate max-w-[10rem]">
-                  Name
-                </th>
-                <th className="px-4 py-2 text-left font-medium text-gray-600 truncate max-w-[10rem]">
-                  Description
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 text-sm">
-              {categories.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 text-gray-700 max-w-[2rem]">
+          <div className="max-h-[50vh] overflow-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50 text-sm font-bold sticky top-0">
+                <tr>
+                  <th className="px-4 py-2 text-left text-gray-600 max-w-[2rem]">
                     <input
                       type="checkbox"
-                      checked={selectedItems.includes(row.id)}
-                      onChange={() => toggleSelection(row.id)}
+                      checked={selectAll}
+                      onChange={() => setSelectAll(!selectAll)}
                     />
-                  </td>
-                  <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
-                    {row.name}
-                  </td>
-                  <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
-                    {row.description || "--"}
-                  </td>
+                  </th>
+                  <th className="px-4 py-2 text-left text-gray-600 truncate max-w-[10rem]">
+                    Name
+                  </th>
+                  <th className="px-4 py-2 text-left text-gray-600 truncate max-w-[10rem]">
+                    Description
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200 text-sm">
+                {categories.map((row) => (
+                  <tr key={row.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-gray-700 max-w-[2rem]">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.includes(row.id)}
+                        onChange={() => toggleSelection(row.id)}
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
+                      {row.name}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
+                      {row.description || "--"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className="p-4 flex justify-between items-center">
             <button
               className="px-4 text-xs py-2 bg-red-500 text-white rounded hover:bg-blue-600"
