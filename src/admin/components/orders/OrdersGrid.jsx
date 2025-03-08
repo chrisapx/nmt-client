@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import LoaderIcon from "../../../global/LoaderIcon";
+import { Sidebar } from "primereact/sidebar"
+import { Button } from "primereact/button";
+import { useSearchParams } from "react-router-dom";
+import { useCart } from "../../../hooks/useCart";
+import ProductCard from "../../../client/components/ProductCard";
 
 const OrdersGrid = ({ orders = [], isLoading = false }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const { getCartItems, loading } = useCart();
+  
   useEffect(() => {
     if (selectAll) {
       setSelectedItems(orders.map((order) => order.id));
@@ -17,6 +26,21 @@ const OrdersGrid = ({ orders = [], isLoading = false }) => {
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+  };
+
+  useEffect(() => {
+    const getSelectedCartItems = async () => {
+      const citems = selectedRecord ? await getCartItems(selectedRecord?.cart?.cartId) : [];
+      console.log("Fetched products: " + citems);
+      setCartItems(citems);
+    }
+    getSelectedCartItems();
+  }, [selectedRecord])
+
+  const handleRowClick = (row) => {
+    searchParams.set("_panelOpen", true);
+    setSearchParams(searchParams);
+    setSelectedRecord(row);
   };
 
   return (
@@ -62,7 +86,9 @@ const OrdersGrid = ({ orders = [], isLoading = false }) => {
             </thead>
             <tbody className="divide-y divide-gray-200 text-sm">
               {orders.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
+                <tr key={row.id} 
+                  onClick={() => handleRowClick(row)}
+                  className="hover:bg-gray-50">
                   <td className="px-4 py-2 text-gray-700 max-w-[2rem]">
                     <input
                       type="checkbox"
@@ -74,7 +100,7 @@ const OrdersGrid = ({ orders = [], isLoading = false }) => {
                     {row.orderId}
                   </td>
                   <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
-                    {row.cartId || "--"}
+                    {row?.cart?.cartId || "--"}
                   </td>
                   <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
                     {row.customerId || "--"}
@@ -88,7 +114,7 @@ const OrdersGrid = ({ orders = [], isLoading = false }) => {
                   <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
                     {row.orderInstructions || "--"}
                   </td>
-                  <td className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
+                  <td title={row?.createdAt} className="px-4 py-2 text-gray-700 truncate max-w-[10rem]">
                     {row.createdAt || "--"}
                   </td>
                 </tr>
@@ -111,6 +137,48 @@ const OrdersGrid = ({ orders = [], isLoading = false }) => {
           </div>
         </>
       )}
+
+      <Sidebar 
+        visible={searchParams.get('_panelOpen') === 'true'} 
+        onHide={() => {
+          searchParams.set("_panelOpen",  false );
+          setSearchParams(searchParams)
+        }} 
+        position="right" 
+        className="w-full md:w-[33vw] p-0"
+        content={({ hide }) => {
+          return(
+          <div className="p-5 h-[100vh] overflow-y-auto">
+            <section className='border-b flex justify-between items-center sticky -top-5 bg-white z-10'>
+              <h2 className="text-xl font-bold">Order Details</h2>
+              <Button 
+                icon="pi pi-times" 
+                className="p-button-rounded p-button-text p-button-sm" 
+                onClick={() => {
+                  setSelectedRecord(null);
+                  hide();
+                }}
+              />
+            </section>
+            {selectedRecord ? (
+              <div className="mt-4 space-y-6">
+                <p>Order ID: { selectedRecord?.orderId}</p>
+                <p>Cart ID: { selectedRecord?.cart?.cartId}</p>
+
+                { loading && 
+                  <p>Loading products...</p>
+                }
+
+                { cartItems?.map((item, index) => (
+                  <ProductCard item={item} key={index}/>
+                ))}
+              </div>
+            ) : (
+              <p>No record selected</p>
+            )}
+          </div>
+        )}}
+      />
     </div>
   );
 };

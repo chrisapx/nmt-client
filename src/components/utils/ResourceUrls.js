@@ -59,7 +59,7 @@ export const api_urls = {
             `${orderBaseUrl}carts/cart-item/quantity?cartItemId=${cartItemId}&quantity=${quantity}`,
         clear_cart: (cartId) => `${orderBaseUrl}carts/${cartId}/cart-items`,
         get_item_count: `${orderBaseUrl}carts/cart-items/user/count`,
-        get_cart_items: (cartId) => `${orderBaseUrl}carts/${cartId}/items`,
+        get_cart_items: (cartId) => `${orderBaseUrl}carts/${cartId}/cartItem/products`,
         get_cart_total_cost: (cartId) => `${orderBaseUrl}carts/${cartId}/total-cost`,
     },
 };

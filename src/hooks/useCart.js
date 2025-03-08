@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getUserToken, isAuthenticated } from '../components/utils/AuthCookiesManager';
 import { api_urls } from '../components/utils/ResourceUrls';
+import { showToast } from '../global/Toast';
 
 const token = getUserToken();
 
@@ -54,13 +55,48 @@ export function useCart(reload) {
         },
         body: JSON.stringify(cartPayload),
       });
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        setError(await response.text());
+        return;
+      }
       const updatedCart = await response.json();
       setCart(updatedCart);
       return updatedCart;
     } catch (err) {
       console.error('Add item error:', err);
       setError(err.message || 'Failed to add item to cart');
+    }
+  };
+
+  const getCartItems = async (cartId) => {
+    if (!isAuthenticated()) {
+      console.warn("Operation not allowed. User is not logged in");
+      return;
+    }
+    setLoading(true);
+    console.log("Fetching products-------------");
+    try {
+      const response = await fetch(api_urls.carts.get_cart_items(cartId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      if (!response.ok) {
+        const error = await response.text();
+        setError(error);
+        showToast(error);
+        return;
+      }
+
+      const products = await response.json();
+
+      console.log("Fetched already-------------" + products)
+      return products;
+    } catch (err) {
+      console.error('Fetch cart items error:', err);
+      setError(err.message || 'Failed fetch cart items');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,7 +112,10 @@ export function useCart(reload) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        setError(await response.text());
+        return;
+      }
       fetchCart();
     } catch (err) {
       console.error('Remove item error:', err);
@@ -97,7 +136,10 @@ export function useCart(reload) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        setError(await response.text());
+        return;
+      }
       fetchCart();
     } catch (err) {
       console.error('Update quantity error:', err);
@@ -117,7 +159,10 @@ export function useCart(reload) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        setError(await response.text());
+        return;
+      }
       fetchCart();
     } catch (err) {
       console.error('Clear cart error:', err);
@@ -136,7 +181,10 @@ export function useCart(reload) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        setError(await response.text());
+        return;
+      };
       const _totalCost = await response.json();
       setTotalCost(_totalCost);
       return _totalCost;
@@ -157,7 +205,10 @@ export function useCart(reload) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        setError(await response.text());
+        return;
+      }
       const count = await response.json();
       setTotalCount(count);
       return count;
@@ -185,6 +236,7 @@ export function useCart(reload) {
     loading,
     error,
     fetchCart,
+    getCartItems,
     addItemToCart,
     removeItemFromCart,
     updateCartItemQuantity,
